@@ -19,6 +19,7 @@ import com.mygdx.game.assets.loaders.BulletLoader;
 
 import java.util.ArrayList;
 
+
 public class MyGdxGame extends ApplicationAdapter {
     protected static float scrWidth;
     protected static float scrHeight;
@@ -30,6 +31,8 @@ public class MyGdxGame extends ApplicationAdapter {
 
     private AssetManager manager; //EXPERIMENTAL SHIT
 
+    Music sound1, sound2;
+    boolean playSong;
     private SpriteBatch batch;
     private static Vector3 tap; //holds the position of tap location
     private BitmapFont font;
@@ -48,6 +51,14 @@ public class MyGdxGame extends ApplicationAdapter {
 
     @Override
     public void create() {
+
+        sound1 = Gdx.audio.newMusic(Gdx.files.internal("music/1.mp3"));
+        sound2 = Gdx.audio.newMusic(Gdx.files.internal("music/2.mp3"));
+        sound1.play();
+        sound2.play();
+        playSong = true;
+        sound1.setLooping(true);
+        sound2.setLooping(true);
         scrWidth = Gdx.graphics.getWidth();
         scrHeight = Gdx.graphics.getHeight();
         gravity = new Vector2();
@@ -64,11 +75,10 @@ public class MyGdxGame extends ApplicationAdapter {
 
         batch = new SpriteBatch();
         tap = new Vector3(); //location of tap
-        font = new BitmapFont(Gdx.files.internal("fonts/arial.fnt"),
-                Gdx.files.internal("fonts/arial.png"), false);
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/bgm1.mp3"));
-        music.setLooping(true);
-        music.play();
+        font = new BitmapFont(Gdx.files.internal("fonts/arial.fnt"), Gdx.files.internal("fonts/arial.png"), false);
+//        music = Gdx.audio.newMusic(Gdx.files.internal("music/bgm1.mp3"));
+//        music.setLooping(true);
+//        music.play();
         matchSound = Gdx.audio.newSound(Gdx.files.internal("sounds/matchStart.wav"));
         shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shootSound.wav"));
         layout = new GlyphLayout();
@@ -124,13 +134,13 @@ public class MyGdxGame extends ApplicationAdapter {
             if (stateChanger.isPressed()) {
                 matchSound.play();
                 for (int i = 0; i < Enemy.NUM_ENEMIES; i++)
-                    enemies.add(new Enemy((float)Math.random() * scrWidth, (float)Math.random() * scrHeight));
+                    enemies.add(new Enemy((float) Math.random() * scrWidth, (float) Math.random() * scrHeight));
                 stateChanger.action();
             }
-        }
-
-        else if (state == GameState.IN_GAME) {
-            for (Enemy enemy : enemies) {enemy.followPlayer(player);}
+        } else if (state == GameState.IN_GAME) {
+            for (Enemy enemy : enemies) {
+                enemy.followPlayer(player);
+            }
             if (stateChanger.isPressed()) stateChanger.action();
             if (Gdx.input.justTouched()) {
                 /*
@@ -162,23 +172,21 @@ public class MyGdxGame extends ApplicationAdapter {
                     state = GameState.GAME_OVER;
                 }
                 //remove bullet and enemy when they collide
-                for (int i = 0; i < bullets.size(); i++)  {
-                    if (enemies.get(j).getBounds().overlaps(bullets.get(i).getBounds()))  {
+                for (int i = 0; i < bullets.size(); i++) {
+                    if (enemies.get(j).getBounds().overlaps(bullets.get(i).getBounds())) {
                         enemies.remove(j);
                         bullets.remove(i);
                     }
                 }
             }
-        }
-
-        else { //state is GAME_OVER
+        } else { //state is GAME_OVER
             if (Gdx.input.justTouched()) {
                 resetGame();
             }
         }
     }
 
-	private void drawGame() {
+    private void drawGame() {
         //game world camera
         camera.update();
         batch.setProjectionMatrix(camera.combined);
