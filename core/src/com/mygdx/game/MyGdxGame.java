@@ -49,6 +49,8 @@ public class MyGdxGame extends ApplicationAdapter {
     private DebugButton debug;
     private StateChanger stateChanger;
 
+    private float time = 0;
+
     @Override
     public void create() {
         scrWidth = Gdx.graphics.getWidth();
@@ -137,9 +139,11 @@ public class MyGdxGame extends ApplicationAdapter {
     }
 
     private void updateGame() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        time += deltaTime;
         player.update();
         for (Enemy enemy : enemies) {
-            enemy.update();
+            //enemy.update();
         }
 
         if (state == GameState.START) {
@@ -211,8 +215,8 @@ public class MyGdxGame extends ApplicationAdapter {
             //start shit here
         } else if (state == GameState.IN_GAME) {
             for (Bullet bullet : bullets) bullet.draw(batch);
-            player.draw(batch);
-            for (Enemy enemy : enemies) enemy.draw(batch);
+            player.draw(batch, time);
+            //for (Enemy enemy : enemies) enemy.draw(batch);
         } else {
             //gameover shit here
         }

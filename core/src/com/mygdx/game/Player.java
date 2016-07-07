@@ -3,8 +3,10 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -18,7 +20,10 @@ public class Player {
     private float xFactor, yFactor; //how much lean you need to move
     private Vector2 position, velocity, accel;
     private Rectangle bounds;
-    public Sprite sprite;
+    private Sprite sprite;
+    private Animation ninja;
+    //float ninjaStateTime = 0;
+
 
     public Player() {
         sprite = new Sprite(new Texture("images/badlogic.jpg"));
@@ -30,6 +35,17 @@ public class Player {
         bounds = new Rectangle();
         xFactor = -300; //play with this value
         yFactor = -400; //play with this value
+
+
+        Texture frame1 = new Texture("images/Ninja_Player(1).png");
+        frame1.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        Texture frame2 = new Texture("images/Ninja_Player(2).png");
+        Texture frame3 = new Texture("images/Ninja_Player(3).png");
+        Texture frame4 = new Texture("images/Ninja_Player(4).png");
+        Texture frame5 = new Texture("images/Ninja_Player(5).png");
+
+        ninja = new Animation(0.05f, new TextureRegion(frame1), new TextureRegion(frame2), new TextureRegion(frame3), new TextureRegion(frame4), new TextureRegion(frame5));
+        ninja.setPlayMode(Animation.PlayMode.LOOP);
     }
 
     //shoot bullets from the player!
@@ -65,8 +81,10 @@ public class Player {
         setAccel(Gdx.input.getAccelerometerX(), Gdx.input.getAccelerometerY(), xFactor, yFactor);
 
         //makes movement feel snappier, comment out for sluggish turning
-        if (Gdx.input.getAccelerometerX() > 0 || Gdx.input.getAccelerometerX() < 0) getVelocity().x = 0;
-        if (Gdx.input.getAccelerometerY() > 0 || Gdx.input.getAccelerometerY() < 0) getVelocity().y = 0;
+        if (Gdx.input.getAccelerometerX() > 0 || Gdx.input.getAccelerometerX() < 0)
+            getVelocity().x = 0;
+        if (Gdx.input.getAccelerometerY() > 0 || Gdx.input.getAccelerometerY() < 0)
+            getVelocity().y = 0;
 
         getVelocity().add(getAccel().x, getAccel().y);
         getPosition().mulAdd(getVelocity(), deltaTime);
@@ -110,21 +128,47 @@ public class Player {
     }
 
     //two dimensional movement
-    public void setAccel(float x, float y, float xMultiplier, float yMultiplier) {accel.set(x * xMultiplier, y * yMultiplier);}
+    public void setAccel(float x, float y, float xMultiplier, float yMultiplier) {
+        accel.set(x * xMultiplier, y * yMultiplier);
+    }
 
-    public Vector2 getAccel() {return accel;}
+    public Vector2 getAccel() {
+        return accel;
+    }
 
-    public void setPosition(float x, float y) {position.set(x, y);}
+    public void setPosition(float x, float y) {
+        position.set(x, y);
+    }
 
-    public Vector2 getPosition() {return position;}
+    public Vector2 getPosition() {
+        return position;
+    }
 
-    public void setVelocity(float x, float y) {velocity.set(x, y);}
+    public void setVelocity(float x, float y) {
+        velocity.set(x, y);
+    }
 
-    public Vector2 getVelocity() {return velocity;}
+    public Vector2 getVelocity() {
+        return velocity;
+    }
 
-    public void setBounds() {bounds.set(getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());}
+    public void setBounds() {
+        bounds.set(getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());
+    }
 
-    public Rectangle getBounds() {return bounds;}
+    public Rectangle getBounds() {
+        return bounds;
+    }
 
-    public void draw(SpriteBatch batch) {batch.draw(sprite, getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());}
+    public void draw(SpriteBatch batch, float time) {
+
+        if (Gdx.input.getAccelerometerX() == 0 && Gdx.input.getAccelerometerY() == 0) {
+            batch.draw(sprite, getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());
+        } else {
+            batch.draw(ninja.getKeyFrame(time), getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());
+
+        }
+    }
 }
+
+
