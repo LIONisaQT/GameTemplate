@@ -96,10 +96,12 @@ public class MyGdxGame extends ApplicationAdapter {
         int songNum =randomNum.nextInt(2) + 1;
         if(songNum == 1) {
         music.play();
+            music.setLooping(true);
         }
 
         if(songNum == 2){
             music1.play();
+            music.setLooping(true);
         }
 
         resetGame();
