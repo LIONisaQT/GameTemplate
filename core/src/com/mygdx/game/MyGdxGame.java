@@ -13,11 +13,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.assets.loaders.BulletLoader;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MyGdxGame extends ApplicationAdapter {
     protected static float scrWidth;
@@ -38,6 +40,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private ArrayList<Bullet> bullets;
     private ArrayList<Enemy> enemies;
     private Music music;
+    private Music music1;
     private Sound shootSound, matchSound;
 
     public static OrthographicCamera camera; //camera is your game world camera
@@ -51,6 +54,8 @@ public class MyGdxGame extends ApplicationAdapter {
         scrWidth = Gdx.graphics.getWidth();
         scrHeight = Gdx.graphics.getHeight();
         gravity = new Vector2();
+
+
 
         /*
         =====EXPERIMENTAL SHIT=====
@@ -66,7 +71,8 @@ public class MyGdxGame extends ApplicationAdapter {
         tap = new Vector3(); //location of tap
         font = new BitmapFont(Gdx.files.internal("fonts/arial.fnt"),
                 Gdx.files.internal("fonts/arial.png"), false);
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/bgm1.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/epicAdventure.mp3"));
+        music1 = Gdx.audio.newMusic(Gdx.files.internal("music/japanese.mp3"));
         music.setLooping(true);
         music.play();
         matchSound = Gdx.audio.newSound(Gdx.files.internal("sounds/matchStart.wav"));
@@ -75,6 +81,7 @@ public class MyGdxGame extends ApplicationAdapter {
         player = new Player();
         bullets = new ArrayList<Bullet>();
         enemies = new ArrayList<Enemy>();
+
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, scrWidth, scrHeight);
@@ -85,7 +92,21 @@ public class MyGdxGame extends ApplicationAdapter {
         debug = new DebugButton(10, 10);
         stateChanger = new StateChanger(scrWidth / 2 + 10, 10);
 
+        Random randomNum = new Random();
+        int songNum =randomNum.nextInt(2) + 1;
+        if(songNum == 1) {
+        music.play();
+            music.setLooping(true);
+        }
+
+        if(songNum == 2){
+            music1.play();
+            music.setLooping(true);
+        }
+
         resetGame();
+
+
     }
 
     @Override
@@ -103,6 +124,8 @@ public class MyGdxGame extends ApplicationAdapter {
         bullets.clear();
         enemies.clear();
     }
+
+
 
     /*
       - gets and translates coordinates of tap to game world coordinates
