@@ -2,30 +2,44 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.math.Vector2;
 
 /**
  * Created by Ryan on 7/5/2016.
  */
 public class Enemy {
-    protected static final int NUM_ENEMIES = 5;
+    protected static final int NUM_ENEMIES = 50;
     private float speed;
     private Vector2 position, velocity;
     private Rectangle bounds;
-    public Sprite sprite;
+    public Animation enemies;
+    public float enemiesStateTime;
+
     public Enemy(float x, float y) {
-        sprite = new Sprite(new Texture("images/badlogic.jpg"));
+        Texture frame1 = new Texture("images/ZombieFirstStep.png");
+        frame1.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        Texture frame2 = new Texture("images/ZombieSecondStep.png");
+        Texture frame3 = new Texture("images/ZombieThirdStep.png");
+        Texture frame4 = new Texture("images/ZombieFourthStep.png");
+        Texture frame5 = new Texture("images/ZombieFifthStep.png");
+        Texture frame6 = new Texture("images/ZombieSixthStep.png");
+        enemies = new Animation (0.05f, new TextureRegion(frame1), new TextureRegion(frame2), new TextureRegion(frame3), new TextureRegion(frame4), new TextureRegion(frame5), new TextureRegion(frame6));
+        enemies.setPlayMode(Animation.PlayMode.LOOP);
+        enemiesStateTime = 0;
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
-        sprite.setScale(sprite.getWidth(), sprite.getHeight());
+        //enemies.setScale(enemies.getWidth(), enemies.getHeight());
         position = new Vector2();
-        setPosition(x, y);
+        setPosition(x + 500, y);
         velocity = new Vector2();
         bounds = new Rectangle();
-        setSpeed(100);
+        setSpeed(50);
     }
 
     public void move() {}
@@ -57,9 +71,10 @@ public class Enemy {
 
     public Vector2 getVelocity() {return velocity;}
 
-    public void setBounds() {bounds.set(getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());}
+    public void setBounds() {bounds.set(getPosition().x, getPosition().y, enemies.getKeyFrame(0).getRegionWidth(), enemies.getKeyFrame(0).getRegionHeight());}
 
     public Rectangle getBounds() {return bounds;}
 
-    public void draw(SpriteBatch batch) {batch.draw(sprite, getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());}
+    public void draw(SpriteBatch batch) { batch.draw(enemies.getKeyFrame(enemiesStateTime), position.x, position.y);
+    }
 }
