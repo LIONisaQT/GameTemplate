@@ -28,7 +28,7 @@ public class Background {
         Texture frame7 = new Texture("Background/BG7.gif");
         Texture frame8 = new Texture("Background/BG8.gif");
 
-        bgAnim = new Animation (0.05f, new TextureRegion(frame1), new TextureRegion(frame2), new TextureRegion(frame3), new TextureRegion(frame4), new TextureRegion(frame5), new TextureRegion(frame6), new TextureRegion(frame7), new TextureRegion(frame8));
+        bgAnim = new Animation(0.1f, new TextureRegion(frame1), new TextureRegion(frame2), new TextureRegion(frame3), new TextureRegion(frame4), new TextureRegion(frame5), new TextureRegion(frame6), new TextureRegion(frame7), new TextureRegion(frame8));
         bgAnim.setPlayMode(Animation.PlayMode.LOOP);
         bgStateTime = 0;
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
