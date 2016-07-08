@@ -21,15 +21,15 @@ public class Player {
     public Sprite sprite;
 
     public Player() {
-        sprite = new Sprite(new Texture("images/badlogic.jpg"));
+        sprite = new Sprite(new Texture("player3.png"));
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());
         position = new Vector2();
         velocity = new Vector2();
         accel = new Vector2();
         bounds = new Rectangle();
-        xFactor = -300; //play with this value
-        yFactor = -400; //play with this value
+        xFactor = -100; //play with this value
+        yFactor = -100; //play with this value
     }
 
     //shoot bullets from the player!
@@ -41,7 +41,7 @@ public class Player {
 
         //bullet spawning
         Bullet bullet = new Bullet();
-        bullet.setPosition(getPosition().x, getPosition().y);
+        bullet.setPosition(getPosition().x + 74, getPosition().y + 90);
         bullet.setVelocity(MathUtils.cos(rotation / 180 * MathUtils.PI) * bullet.getBulletSpeed(),
                 MathUtils.sin(rotation / 180 * MathUtils.PI) * bullet.getBulletSpeed());
         bullets.add(bullet);
@@ -62,7 +62,7 @@ public class Player {
     //all movement code here
     public void tiltControls() {
         float deltaTime = Gdx.graphics.getDeltaTime();
-        setAccel(Gdx.input.getAccelerometerX(), Gdx.input.getAccelerometerY(), xFactor, yFactor);
+        setAccel(-Gdx.input.getAccelerometerY(), Gdx.input.getAccelerometerX(), xFactor, yFactor);
 
         //makes movement feel snappier, comment out for sluggish turning
         if (Gdx.input.getAccelerometerX() > 0 || Gdx.input.getAccelerometerX() < 0) getVelocity().x = 0;
@@ -73,21 +73,21 @@ public class Player {
     }
 
     //make player wrap around screen
-    public void wrap() {
-        //left and right warping
-        if (getPosition().x > MyGdxGame.scrWidth) {
-            setPosition(0 - getBounds().getWidth(), getPosition().y);
-        } else if (getPosition().x < 0 - getBounds().getWidth()) {
-            setPosition(MyGdxGame.scrWidth, getPosition().y);
-        }
-
-        //top and bottom warping
-        if (getPosition().y > MyGdxGame.scrHeight) {
-            setPosition(getPosition().x, 0 - getBounds().getHeight());
-        } else if (getPosition().y < 0 - getBounds().getWidth()) {
-            setPosition(getPosition().x, MyGdxGame.scrHeight);
-        }
-    }
+//    public void wrap() {
+//        //left and right warping
+//        if (getPosition().x > MyGdxGame.scrWidth) {
+//            setPosition(0 - getBounds().getWidth(), getPosition().y);
+//        } else if (getPosition().x < 0 - getBounds().getWidth()) {
+//            setPosition(MyGdxGame.scrWidth, getPosition().y);
+//        }
+//
+//        //top and bottom warping
+//        if (getPosition().y > MyGdxGame.scrHeight) {
+//            setPosition(getPosition().x, 0 - getBounds().getHeight());
+//        } else if (getPosition().y < 0 - getBounds().getWidth()) {
+//            setPosition(getPosition().x, MyGdxGame.scrHeight);
+//        }
+//    }
 
     public void reset() {
         setPosition(MyGdxGame.scrWidth / 2 - getBounds().getWidth() / 2, MyGdxGame.scrHeight / 2);
@@ -99,7 +99,7 @@ public class Player {
         setBounds();
         if (MyGdxGame.state == MyGdxGame.GameState.IN_GAME) {
             tiltControls();
-            wrap();
+//            //wrap();
         }
     }
 
