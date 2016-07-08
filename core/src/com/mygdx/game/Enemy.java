@@ -3,19 +3,17 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.math.Vector2;
 
 /**
  * Created by Ryan on 7/5/2016.
  */
 public class Enemy {
-    protected static final int NUM_ENEMIES = 50;
+    protected static final int NUM_ENEMIES = 10;
     private float speed;
     private Vector2 position, velocity;
     private Rectangle bounds;
@@ -36,7 +34,7 @@ public class Enemy {
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
         //enemies.setScale(enemies.getWidth(), enemies.getHeight());
         position = new Vector2();
-        setPosition(x + 500, y);
+        setPosition(x + 700, y);
         velocity = new Vector2();
         bounds = new Rectangle();
         setSpeed(50);

@@ -2,23 +2,18 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.mygdx.game.assets.loaders.BulletLoader;
 
 import java.util.ArrayList;
 
@@ -36,8 +31,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
     Music sound1, sound2;
     boolean playSong;
-
-    private SpriteBatch batch;
+    public static SpriteBatch batch;
     private static Vector3 tap; //holds the position of tap location
     private BitmapFont font;
     private GlyphLayout layout;
@@ -130,7 +124,8 @@ public class MyGdxGame extends ApplicationAdapter {
     private void updateGame() {
         float deltaTime = Gdx.graphics.getDeltaTime();
         for (Enemy enemy : enemies) {
-            enemy.enemiesStateTime += deltaTime;;
+            enemy.enemiesStateTime += deltaTime;
+            ;
         }
 
         player.update();
@@ -144,56 +139,57 @@ public class MyGdxGame extends ApplicationAdapter {
                 matchSound.play();
                 for (int i = 0; i < Enemy.NUM_ENEMIES; i++)
                     enemies.add(new Enemy((float) Math.random() * scrWidth, (float) Math.random() * scrHeight));
-                stateChanger.action();
-            }
-        } else if (state == GameState.IN_GAME) {
-            for (Enemy enemy : enemies) {
-                enemy.followPlayer(player);
-            }
-            if (stateChanger.isPressed()) stateChanger.action();
-            if (Gdx.input.justTouched()) {
+                    stateChanger.action();
+                }
+            } else if (state == GameState.IN_GAME) {
+                for (Enemy enemy : enemies) {
+                    enemy.followPlayer(player);
+                }
+                if (stateChanger.isPressed()) stateChanger.action();
+                if (Gdx.input.justTouched()) {
+                    enemies.add(new Enemy((float) Math.random() * scrWidth, (float) Math.random() * scrHeight));
                 /*
                 =====EXPERIMENTAL SHIT=====
                 Bullet bullet = manager.get("Bullet.java");
                 bullets.add(bullet);
                 =====EXPERIMENTAL SHIT=====
                 */
-                shootSound.play();
-                player.shoot(bullets);
-            }
-
-            //bullet-only codes
-            for (int i = 0; i < bullets.size(); i++) {
-                bullets.get(i).update();
-                //removes bullets from memory if they go off screen
-                if (bullets.get(i).getPosition().x > scrWidth
-                        || bullets.get(i).getPosition().x < 0 - bullets.get(i).getBounds().getWidth()
-                        || bullets.get(i).getPosition().y > scrHeight
-                        || bullets.get(i).getPosition().y < 0 - bullets.get(i).getBounds().getHeight()) {
-                    bullets.remove(i);
+                    shootSound.play();
+                    player.shoot(bullets);
                 }
-            }
 
-            //remove bullet and enemy when they collide
-            for (int j = 0; j < enemies.size(); j++) {
-                //player die
-//                if (enemies.get(j).getBounds().overlaps(player.getBounds())) {
-//                    state = GameState.GAME_OVER;
-//                }
-                //remove bullet and enemy when they collide
+                //bullet-only codes
                 for (int i = 0; i < bullets.size(); i++) {
-                    if (enemies.get(j).getBounds().overlaps(bullets.get(i).getBounds())) {
-                        enemies.remove(j);
+                    bullets.get(i).update();
+                    //removes bullets from memory if they go off screen
+                    if (bullets.get(i).getPosition().x > scrWidth
+                            || bullets.get(i).getPosition().x < 0 - bullets.get(i).getBounds().getWidth()
+                            || bullets.get(i).getPosition().y > scrHeight
+                            || bullets.get(i).getPosition().y < 0 - bullets.get(i).getBounds().getHeight()) {
                         bullets.remove(i);
                     }
                 }
-            }
-        } else { //state is GAME_OVER
-            if (Gdx.input.justTouched()) {
-                resetGame();
+
+                //remove bullet and enemy when they collide
+                for (int j = 0; j < enemies.size(); j++) {
+                    //player die
+//                if (enemies.get(j).getBounds().overlaps(player.getBounds())) {
+//                    state = GameState.GAME_OVER;
+//                }
+                    //remove bullet and enemy when they collide
+                    for (int i = 0; i < bullets.size(); i++) {
+                        if (enemies.get(j).getBounds().overlaps(bullets.get(i).getBounds())) {
+                            enemies.remove(j);
+                            bullets.remove(i);
+                        }
+                    }
+                }
+            } else { //state is GAME_OVER
+                if (Gdx.input.justTouched()) {
+                    resetGame();
+                }
             }
         }
-    }
 
     private void drawGame() {
         //game world camera
@@ -206,6 +202,7 @@ public class MyGdxGame extends ApplicationAdapter {
         } else if (state == GameState.IN_GAME) {
             for (Bullet bullet : bullets) bullet.draw(batch);
             player.draw(batch);
+//            joystick.draw(batch);
             for (Enemy enemy : enemies) enemy.draw(batch);
         } else {
             //gameover shit here
@@ -225,7 +222,6 @@ public class MyGdxGame extends ApplicationAdapter {
         if (state == GameState.START) {
             stateChanger.draw(batch);
             debug.draw(batch);
-
             layout.setText(font, "Tap to start!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
         } else if (state == GameState.IN_GAME) {
