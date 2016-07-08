@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,12 +14,19 @@ import java.util.ArrayList;
  * Created by Ryan on 7/4/2016.
  */
 public class Player {
-    private float xFactor, yFactor; //how much lean you need to move
-    private Vector2 position, velocity, accel;
+    private MyInputProcessor inputProcessor = new MyInputProcessor(); //lets you play with some of the gestures
+
+    private float xFactor, yFactor, //how much lean you need to move,, used with tiltControls()
+                  moveSpeed;        //left-right speed of the player, used with tapToMove()
+    private Vector2 position, velocity, accel; //accel controls accelerometer numbers
     private Rectangle bounds;
     public Sprite sprite;
+    protected static float first, //holds the y position of the initial tap location
+                            last, //holds the y position of the last tap location
+                     minDistance; //controls the threshold you need to pass in order to flick up to jump
 
     public Player() {
+        Gdx.input.setInputProcessor(inputProcessor);
         sprite = new Sprite(new Texture("images/badlogic.jpg"));
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());
@@ -28,8 +34,9 @@ public class Player {
         velocity = new Vector2();
         accel = new Vector2();
         bounds = new Rectangle();
-        xFactor = -300; //play with this value
-        yFactor = -400; //play with this value
+        xFactor = -300; //play with this value, used with tiltControls()
+        yFactor = -400; //play with this value, used with tiltControls()
+        moveSpeed = 750; //play with this value, used with tapToMove()
     }
 
     //shoot bullets from the player!
@@ -59,6 +66,19 @@ public class Player {
                 MathUtils.sin(rotation / 180 * MathUtils.PI) * bullet.getBulletSpeed());
     }
 
+    public void jump() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        if (minDistance > 10) {
+            if (first > last) {
+                setVelocity(0, 1500);
+                first = 0;
+                last = 0;
+                getVelocity().add(MyGdxGame.gravity);
+            }
+        }
+        getPosition().mulAdd(getVelocity(), deltaTime);
+    }
+
     //all movement code here
     public void tiltControls() {
         float deltaTime = Gdx.graphics.getDeltaTime();
@@ -70,6 +90,21 @@ public class Player {
 
         getVelocity().add(getAccel().x, getAccel().y);
         getPosition().mulAdd(getVelocity(), deltaTime);
+    }
+
+    //tap left/right side of screen to move left or right
+    public void tapToMove() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        float y = getVelocity().y;
+        if (Gdx.input.isTouched()) {
+            if (MyGdxGame.getTapPosition().x > MyGdxGame.scrWidth / 2) {
+                setVelocity(moveSpeed, y);
+            } else {
+                setVelocity(-moveSpeed, y);
+            }
+        } else {
+            setVelocity(0, y);
+        }
     }
 
     //make player wrap around screen
@@ -84,8 +119,8 @@ public class Player {
         //top and bottom warping
         if (getPosition().y > MyGdxGame.scrHeight) {
             setPosition(getPosition().x, 0 - getBounds().getHeight());
-        } else if (getPosition().y < 0 - getBounds().getWidth()) {
-            setPosition(getPosition().x, MyGdxGame.scrHeight);
+        } else if (getPosition().y < 0) { // - getBounds().getWidth()) {
+            setPosition(getPosition().x, 0);
         }
     }
 
@@ -96,9 +131,18 @@ public class Player {
 
     //turn on shit in here
     public void update() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
         setBounds();
+        if (MyGdxGame.state == MyGdxGame.GameState.START) {
+            if (Gdx.input.justTouched()) {
+                setVelocity(0, 100);
+                getPosition().mulAdd(getVelocity(), deltaTime);
+            }
+        }
         if (MyGdxGame.state == MyGdxGame.GameState.IN_GAME) {
-            tiltControls();
+            getVelocity().add(MyGdxGame.gravity);
+            tapToMove();
+            jump();
             wrap();
         }
     }
@@ -126,5 +170,7 @@ public class Player {
 
     public Rectangle getBounds() {return bounds;}
 
-    public void draw(SpriteBatch batch) {batch.draw(sprite, getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());}
+    public void draw(SpriteBatch batch) {
+        batch.draw(sprite, getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());
+    }
 }

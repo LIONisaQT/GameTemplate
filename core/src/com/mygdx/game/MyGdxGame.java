@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
@@ -24,9 +25,7 @@ public class MyGdxGame extends ApplicationAdapter {
     protected static float scrHeight;
 
     protected enum GameState {START, IN_GAME, GAME_OVER}
-
     protected static GameState state;
-    protected static Vector2 gravity;
 
     private AssetManager manager; //EXPERIMENTAL SHIT
 
@@ -34,6 +33,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private static Vector3 tap; //holds the position of tap location
     private BitmapFont font;
     private GlyphLayout layout;
+    protected static Vector2 gravity;
     private Player player;
     private ArrayList<Bullet> bullets;
     private ArrayList<Enemy> enemies;
@@ -98,7 +98,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
     private void resetGame() {
         state = GameState.START;
-        gravity.set(0, -25);
+        gravity.set(0, -50);
         player.reset();
         bullets.clear();
         enemies.clear();
@@ -139,8 +139,8 @@ public class MyGdxGame extends ApplicationAdapter {
                 bullets.add(bullet);
                 =====EXPERIMENTAL SHIT=====
                 */
-                shootSound.play();
-                player.shoot(bullets);
+                //shootSound.play();
+                //player.shoot(bullets);
             }
 
             //bullet-only codes
@@ -203,6 +203,8 @@ public class MyGdxGame extends ApplicationAdapter {
             font.draw(batch, "Game state: " + MyGdxGame.state, 20, MyGdxGame.scrHeight - 20);
             font.draw(batch, "Bullet count: " + bullets.size(), 20, MyGdxGame.scrHeight - 70);
             font.draw(batch, "Number of enemies: " + enemies.size(), 20, MyGdxGame.scrHeight - 120);
+            font.draw(batch, "Velocity: " + (int)player.getVelocity().x + ", " + (int)player.getVelocity().y, 20, MyGdxGame.scrHeight - 270);
+            font.draw(batch, "Position: " + (int)player.getPosition().x + ", " + (int)player.getPosition().y, 20, MyGdxGame.scrHeight - 320);
         }
 
         if (state == GameState.START) {

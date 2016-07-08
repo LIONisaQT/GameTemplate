@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector2;
  * Created by Ryan on 7/5/2016.
  */
 public class Enemy {
-    protected static final int NUM_ENEMIES = 5;
+    protected static final int NUM_ENEMIES = 0;
     private float speed;
     private Vector2 position, velocity;
     private Rectangle bounds;
