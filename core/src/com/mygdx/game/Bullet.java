@@ -21,11 +21,11 @@ public class Bullet {
 
     public Bullet() {
         //memory management -- loading image into manager
-        String image = "images/badlogic.jpg";
+        String image = "arrow2.png";
         manager = new AssetManager();
-        manager.load("images/badlogic.jpg", Texture.class);
+        manager.load("arrow2.png", Texture.class);
         manager.finishLoading();
-        sprite = new Sprite(manager.get("images/badlogic.jpg", Texture.class));
+        sprite = new Sprite(manager.get("arrow2.png", Texture.class));
 
         //sprite = new Sprite(new Texture("badlogic.jpg"));
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
