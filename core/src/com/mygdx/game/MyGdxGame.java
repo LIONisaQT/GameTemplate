@@ -53,9 +53,12 @@ public class MyGdxGame extends ApplicationAdapter {
 
     private DebugButton debug;
     private StateChanger stateChanger;
+    private Background BGanimation;
 
     @Override
     public void create() {
+
+        BGanimation = new Background();
 
         sound1 = Gdx.audio.newMusic(Gdx.files.internal("music/1.mp3"));
         sound2 = Gdx.audio.newMusic(Gdx.files.internal("music/2.mp3"));
@@ -133,6 +136,8 @@ public class MyGdxGame extends ApplicationAdapter {
             enemy.enemiesStateTime += deltaTime;;
         }
 
+        BGanimation.bgStateTime += deltaTime;;
+
         player.update();
         for (Enemy enemy : enemies) {
             enemy.update();
@@ -197,9 +202,11 @@ public class MyGdxGame extends ApplicationAdapter {
 
     private void drawGame() {
         //game world camera
+
         camera.update();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
+        BGanimation.draw(batch);
         font.setColor(Color.WHITE);
         if (state == GameState.START) {
             //start shit here
