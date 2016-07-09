@@ -34,7 +34,7 @@ public class Enemy {
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
         //enemies.setScale(enemies.getWidth(), enemies.getHeight());
         position = new Vector2();
-        setPosition(x + 700, y);
+        setPosition(x + 600, y);
         velocity = new Vector2();
         bounds = new Rectangle();
         setSpeed(50);

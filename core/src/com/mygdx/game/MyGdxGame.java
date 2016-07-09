@@ -41,10 +41,9 @@ public class MyGdxGame extends ApplicationAdapter {
     private Animation zombies;
     private Music music;
     private Sound shootSound, matchSound;
-
     public static OrthographicCamera camera; //camera is your game world camera
     public static OrthographicCamera uiCamera; //uiCamera is your heads-up display
-
+    private int zombiesLives;
     private DebugButton debug;
     private StateChanger stateChanger;
     private Background BGanimation;
@@ -87,6 +86,7 @@ public class MyGdxGame extends ApplicationAdapter {
         player = new Player();
         bullets = new ArrayList<Bullet>();
         enemies = new ArrayList<Enemy>();
+        zombiesLives = 3;
         camera = new OrthographicCamera();
         camera.setToOrtho(false, scrWidth, scrHeight);
         uiCamera = new OrthographicCamera();
@@ -152,7 +152,6 @@ public class MyGdxGame extends ApplicationAdapter {
                 }
                 if (stateChanger.isPressed()) stateChanger.action();
                 if (Gdx.input.justTouched()) {
-                    enemies.add(new Enemy((float) Math.random() * scrWidth, (float) Math.random() * scrHeight));
                 /*
                 =====EXPERIMENTAL SHIT=====
                 Bullet bullet = manager.get("Bullet.java");
@@ -184,11 +183,17 @@ public class MyGdxGame extends ApplicationAdapter {
                     //remove bullet and enemy when they collide
                     for (int i = 0; i < bullets.size(); i++) {
                         if (enemies.get(j).getBounds().overlaps(bullets.get(i).getBounds())) {
-                            enemies.remove(j);
+//                            enemies.remove(j);
                             bullets.remove(i);
+                            zombiesLives = zombiesLives - 1;
+                            if (zombiesLives == 0) {
+                                enemies.remove(j);
+                                zombiesLives = 3;
+                                enemies.add(new Enemy((float) Math.random() * scrWidth, (float) Math.random() * scrHeight));
+                                }
+                            }
                         }
                     }
-                }
             } else { //state is GAME_OVER
                 if (Gdx.input.justTouched()) {
                     resetGame();
