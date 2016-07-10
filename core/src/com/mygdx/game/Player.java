@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class Player {
     private MyInputProcessor inputProcessor = new MyInputProcessor(); //lets you play with some of the gestures
 
-    private float xFactor, yFactor, //how much lean you need to move,, used with tiltControls()
+    private float xFactor, yFactor, //how much lean you need to move, used with tiltControls()
                   moveSpeed;        //left-right speed of the player, used with tapToMove()
     private Vector2 position, velocity, accel; //accel controls accelerometer numbers
     private Rectangle bounds;
@@ -94,7 +94,6 @@ public class Player {
 
     //tap left/right side of screen to move left or right
     public void tapToMove() {
-        float deltaTime = Gdx.graphics.getDeltaTime();
         float y = getVelocity().y;
         if (Gdx.input.isTouched()) {
             if (MyGdxGame.getTapPosition().x > MyGdxGame.scrWidth / 2) {

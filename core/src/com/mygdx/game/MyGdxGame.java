@@ -2,7 +2,6 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
@@ -21,11 +20,14 @@ import com.mygdx.game.assets.loaders.BulletLoader;
 import java.util.ArrayList;
 
 public class MyGdxGame extends ApplicationAdapter {
-    protected static float scrWidth;
-    protected static float scrHeight;
+    protected static float scrWidth, scrHeight;
 
     protected enum GameState {START, IN_GAME, GAME_OVER}
     protected static GameState state;
+
+    //stuff you can save here
+    protected static Preferences preferences;
+    protected static int score, highScore;
 
     private AssetManager manager; //EXPERIMENTAL SHIT
 
@@ -51,6 +53,14 @@ public class MyGdxGame extends ApplicationAdapter {
         scrWidth = Gdx.graphics.getWidth();
         scrHeight = Gdx.graphics.getHeight();
         gravity = new Vector2();
+
+        preferences = new Preferences("Preferences");
+        //if theree are no high scores, then make one
+        if (preferences.getInteger("highScore", 0) == 0) {
+            highScore = 0;
+            preferences.putInteger("highScore", highScore);
+        } else
+            highScore = preferences.getInteger("highScore", 0); //set highScore to saved value
 
         /*
         =====EXPERIMENTAL SHIT=====
@@ -102,6 +112,7 @@ public class MyGdxGame extends ApplicationAdapter {
         player.reset();
         bullets.clear();
         enemies.clear();
+        score = 0;
     }
 
     /*
@@ -139,8 +150,8 @@ public class MyGdxGame extends ApplicationAdapter {
                 bullets.add(bullet);
                 =====EXPERIMENTAL SHIT=====
                 */
-                //shootSound.play();
-                //player.shoot(bullets);
+                shootSound.play();
+                player.shoot(bullets);
             }
 
             //bullet-only codes
@@ -172,6 +183,13 @@ public class MyGdxGame extends ApplicationAdapter {
         }
 
         else { //state is GAME_OVER
+            //sets score to high score if you beat highScore
+            if (score > highScore) {
+                highScore = score;
+                preferences.putInteger("highScore", score);
+            }
+            preferences.flush(); //saves
+
             if (Gdx.input.justTouched()) {
                 resetGame();
             }
@@ -203,8 +221,8 @@ public class MyGdxGame extends ApplicationAdapter {
             font.draw(batch, "Game state: " + MyGdxGame.state, 20, MyGdxGame.scrHeight - 20);
             font.draw(batch, "Bullet count: " + bullets.size(), 20, MyGdxGame.scrHeight - 70);
             font.draw(batch, "Number of enemies: " + enemies.size(), 20, MyGdxGame.scrHeight - 120);
-            font.draw(batch, "Velocity: " + (int)player.getVelocity().x + ", " + (int)player.getVelocity().y, 20, MyGdxGame.scrHeight - 270);
-            font.draw(batch, "Position: " + (int)player.getPosition().x + ", " + (int)player.getPosition().y, 20, MyGdxGame.scrHeight - 320);
+            font.draw(batch, "Velocity: " + (int)player.getVelocity().x + ", " + (int)player.getVelocity().y, 20, MyGdxGame.scrHeight - 170);
+            font.draw(batch, "Position: " + (int)player.getPosition().x + ", " + (int)player.getPosition().y, 20, MyGdxGame.scrHeight - 220);
         }
 
         if (state == GameState.START) {
@@ -214,9 +232,17 @@ public class MyGdxGame extends ApplicationAdapter {
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
         } else if (state == GameState.IN_GAME) {
             stateChanger.draw(batch);
+            layout.setText(font, "Score: " + score);
+            font.draw(batch, layout, scrWidth - layout.width - 20, scrHeight - 20);
+            layout.setText(font, "High score: " + highScore);
+            font.draw(batch, layout, scrWidth - layout.width - 20, scrHeight - 70);
         } else { //state == GameState.GAME_OVER
             layout.setText(font, "Tap to restart!");
-            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
+            layout.setText(font, "Your score: " + score);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2 - 50);
+            layout.setText(font, "High score: " + highScore);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2 - 100);
         }
         batch.end();
     }
