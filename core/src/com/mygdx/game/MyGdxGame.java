@@ -152,12 +152,12 @@ public class MyGdxGame extends ApplicationAdapter {
             if (stateChanger.isPressed()) stateChanger.action();
 
             // check for tap index and shoot bullets
-            if (Gdx.input.isTouched() && !joystick.touchpad.isTouched()) {
+            if (Gdx.input.justTouched() && !joystick.touchpad.isTouched()) {
                 tapIndex = 0;
                 shootSound.play();
                 player.shoot(bullets);
             }
-            else if (Gdx.input.isTouched(0) && joystick.touchpad.isTouched() && Gdx.input.isTouched(1)) {
+            else if (Gdx.input.justTouched() && Gdx.input.isTouched(0) && joystick.touchpad.isTouched() && Gdx.input.isTouched(1)) {
                 tapIndex = 1;
                 shootSound.play();
                 player.shoot(bullets);
