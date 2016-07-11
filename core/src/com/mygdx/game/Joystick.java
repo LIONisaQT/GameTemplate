@@ -49,7 +49,7 @@ public class Joystick {
         Gdx.input.setInputProcessor(stage);
 
         // Set speed of sprite movement
-        spriteSpeed = 10;
+        spriteSpeed = 5;
     }
 
     // update sprite position based on joystick movement
