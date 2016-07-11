@@ -265,14 +265,14 @@ public class MyGdxGame extends ApplicationAdapter {
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
         } else if (state == GameState.IN_GAME) {
             stateChanger.draw(batch);
-            layout.setText(font, "High score: " + highScore);
+            layout.setText(font, "High Score: " + highScore);
             font.draw(batch, layout, scrWidth - layout.width - 20, scrHeight - 10);
             layout.setText(font, "Score: " + score);
             font.draw(batch, layout, scrWidth / 2 - layout.width, scrHeight - 10);
         } else { //state == GameState.GAME_OVER
             layout.setText(font, "Tap to restart!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
-            layout.setText(font, "High score: " + highScore);
+            layout.setText(font, "High Score: " + highScore);
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 70);
         }
         batch.end();
