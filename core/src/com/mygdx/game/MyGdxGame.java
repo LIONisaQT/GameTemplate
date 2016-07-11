@@ -163,13 +163,6 @@ public class MyGdxGame extends ApplicationAdapter {
                 player.shoot(bullets);
             }
 
-//            if (Gdx.input.isTouched()
-//                    && Gdx.input.getX() > joystick.touchpad.getX()
-//                    && Gdx.input.getX() < joystick.touchpad.getX() + joystick.touchpad.getWidth()
-//                    && Gdx.input.getY() < Gdx.graphics.getHeight() - joystick.touchpad.getY()
-//                    && Gdx.input.getY() > Gdx.graphics.getHeight() - joystick.touchpad.getY() - joystick.touchpad.getHeight()) {
-//                System.out.println("OOOOKKK");
-//            }
 //            if (Gdx.input.justTouched()) {
 //                /*
 //                =====EXPERIMENTAL SHIT=====
