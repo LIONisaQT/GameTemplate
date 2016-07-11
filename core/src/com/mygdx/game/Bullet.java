@@ -19,6 +19,7 @@ public class Bullet {
     private Rectangle bounds;
     public Sprite sprite;
 
+
     public Bullet() {
         //memory management -- loading image into manager
         String image = "images/badlogic.jpg";
