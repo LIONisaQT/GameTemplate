@@ -41,12 +41,14 @@ public class MyGdxGame extends ApplicationAdapter {
     private ArrayList<Enemy> enemies;
     private Music music;
     private Sound shootSound, matchSound;
+    private Joystick joystick;
 
     public static OrthographicCamera camera; //camera is your game world camera
     public static OrthographicCamera uiCamera; //uiCamera is your heads-up display
 
     private DebugButton debug;
     private StateChanger stateChanger;
+
 
     @Override
     public void create() {
@@ -85,6 +87,7 @@ public class MyGdxGame extends ApplicationAdapter {
         player = new Player();
         bullets = new ArrayList<Bullet>();
         enemies = new ArrayList<Enemy>();
+        joystick = new Joystick();
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, scrWidth, scrHeight);
@@ -126,6 +129,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
     private void updateGame() {
         player.update();
+        joystick.update(player);
         for (Enemy enemy : enemies) {
             enemy.update();
         }
@@ -212,6 +216,10 @@ public class MyGdxGame extends ApplicationAdapter {
             //gameover shit here
         }
         batch.end();
+        // draw virtual joystick in game only
+        if (state == GameState.IN_GAME) {
+            joystick.draw();
+        }
 
         //game ui camera
         batch.setProjectionMatrix(uiCamera.combined);

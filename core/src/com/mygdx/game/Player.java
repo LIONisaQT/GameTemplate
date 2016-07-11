@@ -140,8 +140,8 @@ public class Player {
         }
         if (MyGdxGame.state == MyGdxGame.GameState.IN_GAME) {
             getVelocity().add(MyGdxGame.gravity);
-            tapToMove();
-            jump();
+            //tapToMove();
+            //jump();
             wrap();
         }
     }
