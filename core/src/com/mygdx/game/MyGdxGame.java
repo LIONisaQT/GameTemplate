@@ -26,6 +26,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
     protected static GameState state;
     protected static Vector2 gravity;
+    protected static Preferences preferences;
 
     private AssetManager manager; //EXPERIMENTAL SHIT
 
@@ -40,7 +41,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private ArrayList<Enemy> enemies;
     private Animation zombies;
     private Music music;
-    private int score;
+    protected static int score , highScore;
     private Sound shootSound, matchSound;
     public static OrthographicCamera camera; //camera is your game world camera
     public static OrthographicCamera uiCamera; //uiCamera is your heads-up display
@@ -64,6 +65,16 @@ public class MyGdxGame extends ApplicationAdapter {
         scrWidth = Gdx.graphics.getWidth();
         scrHeight = Gdx.graphics.getHeight();
         gravity = new Vector2();
+
+        preferences = new Preferences("Preferences");
+        //if there are no high scores then make one
+        if (preferences.getInteger("highScore", 0) == 0) {
+            highScore = 0;
+            preferences.putInteger("highScore", highScore);
+        }else {
+         highScore = preferences.getInteger("highScore", 0);
+        //set highscore to set value
+        }
 
         /*
         =====EXPERIMENTAL SHIT=====
@@ -199,6 +210,12 @@ public class MyGdxGame extends ApplicationAdapter {
                         }
                     }
             } else { //state is GAME_OVER
+                if (score > highScore) {
+                    highScore = score;
+                    preferences.putInteger("highScore", score);
+                }
+            preferences.flush(); //saves
+
                 if (Gdx.input.justTouched()) {
                     resetGame();
                 }
@@ -242,11 +259,15 @@ public class MyGdxGame extends ApplicationAdapter {
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
         } else if (state == GameState.IN_GAME) {
             stateChanger.draw(batch);
+            layout.setText(font, "High score: " + highScore);
+            font.draw(batch, layout, scrWidth - layout.width - 20, scrHeight - 70);
             layout.setText(font, "Score: " + score);
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 10);
         } else { //state == GameState.GAME_OVER
             layout.setText(font, "Tap to restart!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
+            layout.setText(font, "High score: " + highScore);
+            font.draw(batch, layout, scrWidth - layout.width - 20, scrHeight - 70);
         }
         batch.end();
     }
