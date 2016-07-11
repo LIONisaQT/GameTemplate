@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -29,10 +28,10 @@ public class Player {
     private Sprite ninja3;
     private Sprite ninja4;
     private Sprite ninja5;
-    private float x;
-    private float y;
-    protected static float first, //holds the y position of the initial tap location
-            last, //holds the y position of the last tap location
+    private float objWidth;
+    private float objHeight;
+    protected static float first, //holds the objHeight position of the initial tap location
+            last, //holds the objHeight position of the last tap location
             minDistance; //controls the threshold you need to pass in order to flick up to jump
 
 
@@ -45,7 +44,7 @@ public class Player {
         Gdx.input.setInputProcessor(inputProcessor);
         sprite = new Sprite(new Texture("images/Ninja_Player(1).png"));
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
-        sprite.setScale(x, y);
+        sprite.setScale(objWidth, objHeight);
         position = new Vector2();
         velocity = new Vector2();
         accel = new Vector2();
@@ -53,10 +52,10 @@ public class Player {
         xFactor = -300; //play with this value
         yFactor = -400; //play with this value
         moveSpeed = 400;
-        x = 90;
-        y = 100;
+        objWidth = 90;
+        objHeight = 100;
 
-
+        //Player animation
         Texture frame1 = new Texture("images/Ninja_Player(1).png");
         frame1.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         Texture frame2 = new Texture("images/Ninja_Player(2).png");
@@ -68,21 +67,22 @@ public class Player {
         ninja3 = new Sprite(frame3);
         ninja4 = new Sprite(frame4);
         ninja5 = new Sprite(frame5);
-        ninja1.setScale(x, y);
-        ninja2.setScale(x, y);
-        ninja3.setScale(x, y);
-        ninja4.setScale(x, y);
-        ninja5.setScale(x, y);
-        ninja1.setSize(x, y);
-        ninja2.setSize(x, y);
-        ninja3.setSize(x, y);
-        ninja4.setSize(x, y);
-        ninja5.setSize(x, y);
+        ninja1.setScale(objWidth, objHeight);
+        ninja2.setScale(objWidth, objHeight);
+        ninja3.setScale(objWidth, objHeight);
+        ninja4.setScale(objWidth, objHeight);
+        ninja5.setScale(objWidth, objHeight);
+        ninja1.setSize(objWidth, objHeight);
+        ninja2.setSize(objWidth, objHeight);
+        ninja3.setSize(objWidth, objHeight);
+        ninja4.setSize(objWidth, objHeight);
+        ninja5.setSize(objWidth, objHeight);
 
 
 
         ninja = new Animation(0.05f, new TextureRegion(ninja1), new TextureRegion(ninja2), new TextureRegion(ninja3), new TextureRegion(ninja4), new TextureRegion(ninja5));
         ninja.setPlayMode(Animation.PlayMode.LOOP);
+
     }
 
     //shoot bullets from the player!
@@ -141,7 +141,7 @@ public class Player {
         getPosition().mulAdd(getVelocity(), deltaTime);
     }
 
-        //tap left/right side of screen to move left or right
+    //tap left/right side of screen to move left or right
     public void tapToMove() {
         float y = getVelocity().y;
         if (Gdx.input.isTouched()) {
@@ -173,7 +173,7 @@ public class Player {
     }
 
     public void reset() {
-        setPosition(MyGdxGame.scrWidth / 2 - getBounds().getWidth() / 2, MyGdxGame.scrHeight / 2);
+        setPosition(0, 0);
         setVelocity(0, 0);
     }
 
@@ -183,7 +183,7 @@ public class Player {
         setBounds();
         if (MyGdxGame.state == MyGdxGame.GameState.START) {
             if (Gdx.input.justTouched()) {
-                setVelocity(0, 100);
+                setVelocity(0, 0);
                 getPosition().mulAdd(getVelocity(), deltaTime);
             }
         }
@@ -229,9 +229,7 @@ public class Player {
         return velocity;
     }
 
-    public void setBounds() {
-        bounds.set(getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());
-    }
+    public void setBounds() {bounds.set(getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());}
 
     public Rectangle getBounds() {
         return bounds;
@@ -240,7 +238,7 @@ public class Player {
     public void draw(SpriteBatch batch, float time) {
 
         if (Gdx.input.isTouched() == false) {
-            batch.draw(sprite, getPosition().x, getPosition().y, x, y);
+            batch.draw(sprite, getPosition().x, getPosition().y, objWidth, objHeight);
         } else {
             batch.draw(ninja.getKeyFrame(time), getPosition().x, getPosition().y, ninja1.getWidth(), ninja1.getHeight());
 

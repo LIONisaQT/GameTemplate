@@ -144,7 +144,7 @@ public class MyGdxGame extends ApplicationAdapter {
         time += deltaTime;
         player.update();
         for (Enemy enemy : enemies) {
-            //enemy.update();
+            enemy.update();
         }
 
         if (state == GameState.START) {
@@ -216,7 +216,7 @@ public class MyGdxGame extends ApplicationAdapter {
         } else if (state == GameState.IN_GAME) {
             for (Bullet bullet : bullets) bullet.draw(batch);
             player.draw(batch, time);
-            //for (Enemy enemy : enemies) enemy.draw(batch);
+            for (Enemy enemy : enemies) enemy.draw(batch);
         } else {
             //gameover shit here
         }
