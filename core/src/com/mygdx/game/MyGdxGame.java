@@ -180,6 +180,7 @@ public class MyGdxGame extends ApplicationAdapter {
                 bullets.add(bullet);
                 =====EXPERIMENTAL SHIT=====
                 */
+                shootSound.play();
                 player.shoot(bullets);
             }
 
