@@ -30,6 +30,9 @@ public class MyGdxGame extends ApplicationAdapter {
     protected static GameState state;
     protected static Vector2 gravity;
 
+    protected static Preferences preferences;
+    protected static int score, highScore;
+
     private AssetManager manager; //EXPERIMENTAL SHIT
 
     private SpriteBatch batch;
@@ -57,7 +60,13 @@ public class MyGdxGame extends ApplicationAdapter {
         scrHeight = Gdx.graphics.getHeight();
         gravity = new Vector2();
 
-
+        preferences = new Preferences("Preferences");
+        //if theree are no high scores, then make one
+        if (preferences.getInteger("highScore", 0) == 0) {
+            highScore = 0;
+            preferences.putInteger("highScore", highScore);
+        } else
+            highScore = preferences.getInteger("highScore", 0); //set highScore to saved value
 
         /*
         =====EXPERIMENTAL SHIT=====
@@ -199,6 +208,12 @@ public class MyGdxGame extends ApplicationAdapter {
         }
 
         else { //state is GAME_OVER
+            //sets score to high score if you beat highScore
+            if (score > highScore) {
+                highScore = score;
+                preferences.putInteger("highScore", score);
+            }
+            preferences.flush(); //saves
             if (Gdx.input.justTouched()) {
                 resetGame();
             }
