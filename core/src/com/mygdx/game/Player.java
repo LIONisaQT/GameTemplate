@@ -88,7 +88,8 @@ public class Player {
     }
 
     public void reset() {
-        setPosition(MyGdxGame.scrWidth / 2 - getBounds().getWidth() / 2, MyGdxGame.scrHeight / 2);
+//        setPosition(MyGdxGame.scrWidth / 2 - getBounds().getWidth() / 2, MyGdxGame.scrHeight / 2);
+        setPosition(0 - getBounds().getWidth() / 2, MyGdxGame.scrHeight / 2 - 90);
         setVelocity(0, 0);
     }
 
