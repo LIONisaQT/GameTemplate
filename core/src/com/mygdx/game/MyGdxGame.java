@@ -176,7 +176,7 @@ public class MyGdxGame extends ApplicationAdapter {
                 bullets.add(bullet);
                 =====EXPERIMENTAL SHIT=====
                 */
-                //player.shoot(bullets);
+                player.shoot(bullets);
             }
 
             //bullet-only codes
