@@ -40,6 +40,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private ArrayList<Enemy> enemies;
     private Animation zombies;
     private Music music;
+    private int score;
     private Sound shootSound, matchSound;
     public static OrthographicCamera camera; //camera is your game world camera
     public static OrthographicCamera uiCamera; //uiCamera is your heads-up display
@@ -81,12 +82,13 @@ public class MyGdxGame extends ApplicationAdapter {
 //        music.setLooping(true);
 //        music.play();
         matchSound = Gdx.audio.newSound(Gdx.files.internal("sounds/matchStart.wav"));
-        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shootSound.wav"));
+        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/louderArrowSound.mp3"));
         layout = new GlyphLayout();
         player = new Player();
         bullets = new ArrayList<Bullet>();
         enemies = new ArrayList<Enemy>();
         zombiesLives = 3;
+        score = 0;
         camera = new OrthographicCamera();
         camera.setToOrtho(false, scrWidth, scrHeight);
         uiCamera = new OrthographicCamera();
@@ -158,7 +160,8 @@ public class MyGdxGame extends ApplicationAdapter {
                 bullets.add(bullet);
                 =====EXPERIMENTAL SHIT=====
                 */
-                    shootSound.play();
+                    long id = shootSound.play();
+                    shootSound.setVolume(id, 1.0f);
                     player.shoot(bullets);
                 }
 
@@ -188,6 +191,7 @@ public class MyGdxGame extends ApplicationAdapter {
                             zombiesLives = zombiesLives - 1;
                             if (zombiesLives == 0) {
                                 enemies.remove(j);
+                                score++;
                                 zombiesLives = 3;
                                 enemies.add(new Enemy((float) Math.random() * scrWidth, (float) Math.random() * scrHeight));
                                 }
@@ -238,6 +242,8 @@ public class MyGdxGame extends ApplicationAdapter {
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
         } else if (state == GameState.IN_GAME) {
             stateChanger.draw(batch);
+            layout.setText(font, "Score: " + score);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 10);
         } else { //state == GameState.GAME_OVER
             layout.setText(font, "Tap to restart!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
