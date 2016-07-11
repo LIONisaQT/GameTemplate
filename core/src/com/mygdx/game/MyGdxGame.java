@@ -43,6 +43,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private Music music1;
     private Sound shootSound, matchSound;
 
+
     public static OrthographicCamera camera; //camera is your game world camera
     public static OrthographicCamera uiCamera; //uiCamera is your heads-up display
 
@@ -121,7 +122,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
     private void resetGame() {
         state = GameState.START;
-        gravity.set(0, -25);
+        gravity.set(0, -50);
         player.reset();
         bullets.clear();
         enemies.clear();
@@ -166,8 +167,7 @@ public class MyGdxGame extends ApplicationAdapter {
                 bullets.add(bullet);
                 =====EXPERIMENTAL SHIT=====
                 */
-                shootSound.play();
-                player.shoot(bullets);
+                //player.shoot(bullets);
             }
 
             //bullet-only codes
@@ -230,7 +230,10 @@ public class MyGdxGame extends ApplicationAdapter {
             font.draw(batch, "Game state: " + MyGdxGame.state, 20, MyGdxGame.scrHeight - 20);
             font.draw(batch, "Bullet count: " + bullets.size(), 20, MyGdxGame.scrHeight - 70);
             font.draw(batch, "Number of enemies: " + enemies.size(), 20, MyGdxGame.scrHeight - 120);
+            font.draw(batch, "Velocity: " + (int)player.getVelocity().x + ", " + (int)player.getVelocity().y, 20, MyGdxGame.scrHeight - 170);
+            font.draw(batch, "Position: " + (int)player.getPosition().x + ", " + (int)player.getPosition().y, 20, MyGdxGame.scrHeight - 220);
         }
+
 
         if (state == GameState.START) {
             stateChanger.draw(batch);

@@ -17,24 +17,44 @@ import java.util.ArrayList;
  * Created by Ryan on 7/4/2016.
  */
 public class Player {
+    private MyInputProcessor inputProcessor = new MyInputProcessor(); //lets you play with some of the gestures
     private float xFactor, yFactor; //how much lean you need to move
+    private float moveSpeed;        //left-right speed of the player, used with tapToMove()
     private Vector2 position, velocity, accel;
     private Rectangle bounds;
     private Sprite sprite;
     private Animation ninja;
+    private Sprite ninja1;
+    private Sprite ninja2;
+    private Sprite ninja3;
+    private Sprite ninja4;
+    private Sprite ninja5;
+    private float x;
+    private float y;
+    protected static float first, //holds the y position of the initial tap location
+            last, //holds the y position of the last tap location
+            minDistance; //controls the threshold you need to pass in order to flick up to jump
+
+
+
+
     //float ninjaStateTime = 0;
 
 
     public Player() {
-        sprite = new Sprite(new Texture("images/badlogic.jpg"));
+        Gdx.input.setInputProcessor(inputProcessor);
+        sprite = new Sprite(new Texture("images/Ninja_Player(1).png"));
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
-        sprite.setScale(sprite.getWidth(), sprite.getHeight());
+        sprite.setScale(x, y);
         position = new Vector2();
         velocity = new Vector2();
         accel = new Vector2();
         bounds = new Rectangle();
         xFactor = -300; //play with this value
         yFactor = -400; //play with this value
+        moveSpeed = 400;
+        x = 90;
+        y = 100;
 
 
         Texture frame1 = new Texture("images/Ninja_Player(1).png");
@@ -43,8 +63,25 @@ public class Player {
         Texture frame3 = new Texture("images/Ninja_Player(3).png");
         Texture frame4 = new Texture("images/Ninja_Player(4).png");
         Texture frame5 = new Texture("images/Ninja_Player(5).png");
+        ninja1 = new Sprite(frame1);
+        ninja2 = new Sprite(frame2);
+        ninja3 = new Sprite(frame3);
+        ninja4 = new Sprite(frame4);
+        ninja5 = new Sprite(frame5);
+        ninja1.setScale(x, y);
+        ninja2.setScale(x, y);
+        ninja3.setScale(x, y);
+        ninja4.setScale(x, y);
+        ninja5.setScale(x, y);
+        ninja1.setSize(x, y);
+        ninja2.setSize(x, y);
+        ninja3.setSize(x, y);
+        ninja4.setSize(x, y);
+        ninja5.setSize(x, y);
 
-        ninja = new Animation(0.05f, new TextureRegion(frame1), new TextureRegion(frame2), new TextureRegion(frame3), new TextureRegion(frame4), new TextureRegion(frame5));
+
+
+        ninja = new Animation(0.05f, new TextureRegion(ninja1), new TextureRegion(ninja2), new TextureRegion(ninja3), new TextureRegion(ninja4), new TextureRegion(ninja5));
         ninja.setPlayMode(Animation.PlayMode.LOOP);
     }
 
@@ -75,6 +112,20 @@ public class Player {
                 MathUtils.sin(rotation / 180 * MathUtils.PI) * bullet.getBulletSpeed());
     }
 
+    public void jump() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        if (minDistance > 10) {
+            if (first > last) {            wrap();
+
+                setVelocity(0, 1000);
+                first = 0;
+                last = 0;
+                getVelocity().add(MyGdxGame.gravity);
+            }
+        }
+        getPosition().mulAdd(getVelocity(), deltaTime);
+    }
+
     //all movement code here
     public void tiltControls() {
         float deltaTime = Gdx.graphics.getDeltaTime();
@@ -90,6 +141,20 @@ public class Player {
         getPosition().mulAdd(getVelocity(), deltaTime);
     }
 
+        //tap left/right side of screen to move left or right
+    public void tapToMove() {
+        float y = getVelocity().y;
+        if (Gdx.input.isTouched()) {
+            if (MyGdxGame.getTapPosition().x > MyGdxGame.scrWidth / 2) {
+                setVelocity(moveSpeed, y);
+            } else {
+                setVelocity(-moveSpeed, y);
+            }
+        } else {
+            setVelocity(0, y);
+        }
+    }
+
     //make player wrap around screen
     public void wrap() {
         //left and right warping
@@ -102,8 +167,8 @@ public class Player {
         //top and bottom warping
         if (getPosition().y > MyGdxGame.scrHeight) {
             setPosition(getPosition().x, 0 - getBounds().getHeight());
-        } else if (getPosition().y < 0 - getBounds().getWidth()) {
-            setPosition(getPosition().x, MyGdxGame.scrHeight);
+        } else if (getPosition().y < 0) { // - getBounds().getWidth()) {
+            setPosition(getPosition().x, 0);
         }
     }
 
@@ -114,12 +179,24 @@ public class Player {
 
     //turn on shit in here
     public void update() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
         setBounds();
-        if (MyGdxGame.state == MyGdxGame.GameState.IN_GAME) {
-            tiltControls();
-            wrap();
+        if (MyGdxGame.state == MyGdxGame.GameState.START) {
+            if (Gdx.input.justTouched()) {
+                setVelocity(0, 100);
+                getPosition().mulAdd(getVelocity(), deltaTime);
+            }
         }
-    }
+        if (MyGdxGame.state == MyGdxGame.GameState.IN_GAME) {
+            getVelocity().add(MyGdxGame.gravity);
+            tapToMove();
+            jump();
+            wrap();
+
+        }
+
+        }
+
 
     //one dimensional movement, third parameter controls up-down or left-right
     public void setAccel(float acc, float multiplier, char c) {
@@ -162,10 +239,10 @@ public class Player {
 
     public void draw(SpriteBatch batch, float time) {
 
-        if (Gdx.input.getAccelerometerX() == 0 && Gdx.input.getAccelerometerY() == 0) {
-            batch.draw(sprite, getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());
+        if (Gdx.input.isTouched() == false) {
+            batch.draw(sprite, getPosition().x, getPosition().y, x, y);
         } else {
-            batch.draw(ninja.getKeyFrame(time), getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());
+            batch.draw(ninja.getKeyFrame(time), getPosition().x, getPosition().y, ninja1.getWidth(), ninja1.getHeight());
 
         }
     }
