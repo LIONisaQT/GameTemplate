@@ -55,7 +55,7 @@ public class Joystick {
 
     // update sprite position based on joystick movement
     public void update(Player player) {
-        player.setPosition(player.getPosition().x + touchpad.getKnobPercentX()*10, player.getPosition().y + touchpad.getKnobPercentY()*10);
+        player.setPosition(player.getPosition().x + touchpad.getKnobPercentX()*spriteSpeed, player.getPosition().y + touchpad.getKnobPercentY()*spriteSpeed);
     }
 
     public void draw() {

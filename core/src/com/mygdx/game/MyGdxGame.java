@@ -42,7 +42,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private Music music;
     private Sound shootSound, matchSound;
     private Joystick joystick;
-    private int tapIndex;
+    private static int tapIndex;
 
 
     public static OrthographicCamera camera; //camera is your game world camera
