@@ -6,7 +6,8 @@ package com.mygdx.game;
 public class StateChanger extends Button {
     public StateChanger(float x, float y) {
         super(x, y);
-        sprite.setSize(MyGdxGame.scrWidth / 2 - 20, MyGdxGame.scrHeight / 10);
+        //sprite.setSize(MyGdxGame.scrWidth / 2 - 20, MyGdxGame.scrHeight / 10);
+        sprite.setSize(100, 100);
         setBounds();
     }
 
