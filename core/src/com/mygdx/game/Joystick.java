@@ -41,7 +41,7 @@ public class Joystick {
         //Create new TouchPad with the created style
         touchpad = new Touchpad(10, touchpadStyle);
         //setBounds(x,y,width,height)
-        touchpad.setBounds(50, 50, 150, 150);
+        touchpad.setBounds(50, 50, 130, 130);
 
         // Create stage and add touchpad
         stage = new Stage();

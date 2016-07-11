@@ -7,7 +7,7 @@ public class DebugButton extends Button {
     protected boolean debug;
     public DebugButton(float x, float y) {
         super(x, y);
-        sprite.setSize(MyGdxGame.scrWidth / 2 - 20, MyGdxGame.scrHeight / 10);
+        sprite.setSize(100, 100);
         setBounds();
         debug = false;
     }
