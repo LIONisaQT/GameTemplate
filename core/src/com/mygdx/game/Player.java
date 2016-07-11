@@ -75,14 +75,14 @@ public class Player {
         //left and right warping
         if (getPosition().x > MyGdxGame.scrWidth) {
             setPosition(0 - getBounds().getWidth(), getPosition().y);
-        } else if (getPosition().x < 0 - getBounds().getWidth()) {
-            setPosition(MyGdxGame.scrWidth, getPosition().y);
+        } else if (getPosition().x < 0) {
+            setPosition(0, getPosition().y);
         }
 
         //top and bottom warping
         if (getPosition().y > MyGdxGame.scrHeight) {
             setPosition(getPosition().x, 0 - getBounds().getHeight());
-        } else if (getPosition().y < 0 - getBounds().getWidth()) {
+        } else if (getPosition().y < 0 - getBounds().getHeight()) {
             setPosition(getPosition().x, MyGdxGame.scrHeight);
         }
     }
@@ -97,7 +97,7 @@ public class Player {
         setBounds();
         if (MyGdxGame.state == MyGdxGame.GameState.IN_GAME) {
 //            tiltControls();
-//            wrap();
+            wrap();
         }
     }
 
