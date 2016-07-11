@@ -28,7 +28,6 @@ public class MyGdxGame extends ApplicationAdapter {
     //stuff you can save here
     protected static Preferences preferences;
     protected static int score, highScore;
-    protected static int tapIndex;
 
     private AssetManager manager; //EXPERIMENTAL SHIT
 
@@ -43,6 +42,8 @@ public class MyGdxGame extends ApplicationAdapter {
     private Music music;
     private Sound shootSound, matchSound;
     private Joystick joystick;
+    protected static int tapIndex;
+
 
     public static OrthographicCamera camera; //camera is your game world camera
     public static OrthographicCamera uiCamera; //uiCamera is your heads-up display
@@ -56,7 +57,6 @@ public class MyGdxGame extends ApplicationAdapter {
         scrWidth = Gdx.graphics.getWidth();
         scrHeight = Gdx.graphics.getHeight();
         gravity = new Vector2();
-        tapIndex = 0;
 
         preferences = new Preferences("Preferences");
         //if theree are no high scores, then make one
@@ -90,6 +90,7 @@ public class MyGdxGame extends ApplicationAdapter {
         bullets = new ArrayList<Bullet>();
         enemies = new ArrayList<Enemy>();
         joystick = new Joystick();
+        tapIndex = 0;
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, scrWidth, scrHeight);
