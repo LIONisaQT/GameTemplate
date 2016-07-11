@@ -22,6 +22,7 @@ public class Bullet {
     public Sprite sprite;
     private Animation star;
 
+
     public Bullet() {
         //memory management -- loading image into manager
         manager = new AssetManager();

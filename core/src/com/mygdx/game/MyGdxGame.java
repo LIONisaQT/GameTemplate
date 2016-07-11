@@ -10,8 +10,10 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.math.Vector2;
@@ -45,6 +47,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private Music music;
     private Music music1;
     private Sound shootSound, matchSound;
+    private Sprite background;
 
 
     public static OrthographicCamera camera; //camera is your game world camera
@@ -60,6 +63,7 @@ public class MyGdxGame extends ApplicationAdapter {
         scrWidth = Gdx.graphics.getWidth();
         scrHeight = Gdx.graphics.getHeight();
         gravity = new Vector2();
+        background=new Sprite(new Texture("images/shawdow forrest.jpg"));
 
         preferences = new Preferences("Preferences");
         //if theree are no high scores, then make one
@@ -216,6 +220,7 @@ public class MyGdxGame extends ApplicationAdapter {
             preferences.flush(); //saves
             if (Gdx.input.justTouched()) {
                 resetGame();
+
             }
         }
     }
@@ -225,9 +230,12 @@ public class MyGdxGame extends ApplicationAdapter {
         camera.update();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
+        batch.draw(background,0,0,scrWidth,scrHeight);
+
         font.setColor(Color.WHITE);
         if (state == GameState.START) {
             //start shit here
+            font.draw(batch, "text  ", 20, MyGdxGame.scrHeight - 20);
         } else if (state == GameState.IN_GAME) {
             for (Bullet bullet : bullets) bullet.draw(batch, time);
             player.draw(batch, time);
@@ -240,7 +248,6 @@ public class MyGdxGame extends ApplicationAdapter {
         //game ui camera
         batch.setProjectionMatrix(uiCamera.combined);
         batch.begin();
-
         if (debug.debug) {
             font.draw(batch, "Game state: " + MyGdxGame.state, 20, MyGdxGame.scrHeight - 20);
             font.draw(batch, "Bullet count: " + bullets.size(), 20, MyGdxGame.scrHeight - 70);
