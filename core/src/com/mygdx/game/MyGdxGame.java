@@ -28,6 +28,7 @@ public class MyGdxGame extends ApplicationAdapter {
     //stuff you can save here
     protected static Preferences preferences;
     protected static int score, highScore;
+    protected static int tapIndex;
 
     private AssetManager manager; //EXPERIMENTAL SHIT
 
@@ -55,6 +56,7 @@ public class MyGdxGame extends ApplicationAdapter {
         scrWidth = Gdx.graphics.getWidth();
         scrHeight = Gdx.graphics.getHeight();
         gravity = new Vector2();
+        tapIndex = 0;
 
         preferences = new Preferences("Preferences");
         //if theree are no high scores, then make one
@@ -123,7 +125,7 @@ public class MyGdxGame extends ApplicationAdapter {
       - you don't need to touch this at all
     */
     public static Vector3 getTapPosition() { //gets and translates coordinates of tap to game world coordinates
-        tap.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+        tap.set(Gdx.input.getX(tapIndex), Gdx.input.getY(tapIndex), 0);
         return camera.unproject(tap);
     }
 
@@ -147,17 +149,37 @@ public class MyGdxGame extends ApplicationAdapter {
         else if (state == GameState.IN_GAME) {
             for (Enemy enemy : enemies) {enemy.followPlayer(player);}
             if (stateChanger.isPressed()) stateChanger.action();
-            if (Gdx.input.justTouched()) {
-                /*
-                =====EXPERIMENTAL SHIT=====
-                Bullet bullet = manager.get("Bullet.java");
-                bullets.add(bullet);
-                =====EXPERIMENTAL SHIT=====
-                */
+
+            // check for tap index and shoot bullets
+            if (Gdx.input.isTouched() && !joystick.touchpad.isTouched()) {
+                tapIndex = 0;
+                shootSound.play();
+                player.shoot(bullets);
+            }
+            else if (Gdx.input.isTouched(0) && joystick.touchpad.isTouched() && Gdx.input.isTouched(1)) {
+                tapIndex = 1;
                 shootSound.play();
                 player.shoot(bullets);
             }
 
+//            if (Gdx.input.isTouched()
+//                    && Gdx.input.getX() > joystick.touchpad.getX()
+//                    && Gdx.input.getX() < joystick.touchpad.getX() + joystick.touchpad.getWidth()
+//                    && Gdx.input.getY() < Gdx.graphics.getHeight() - joystick.touchpad.getY()
+//                    && Gdx.input.getY() > Gdx.graphics.getHeight() - joystick.touchpad.getY() - joystick.touchpad.getHeight()) {
+//                System.out.println("OOOOKKK");
+//            }
+//            if (Gdx.input.justTouched()) {
+//                /*
+//                =====EXPERIMENTAL SHIT=====
+//                Bullet bullet = manager.get("Bullet.java");
+//                bullets.add(bullet);
+//                =====EXPERIMENTAL SHIT=====
+//                */
+//                shootSound.play();
+//                player.shoot(bullets);
+//            }
+//
             //bullet-only codes
             for (int i = 0; i < bullets.size(); i++) {
                 bullets.get(i).update();
