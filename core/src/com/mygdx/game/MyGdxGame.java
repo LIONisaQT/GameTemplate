@@ -88,7 +88,7 @@ public class MyGdxGame extends ApplicationAdapter {
         music.setLooping(true);
         music.play();
         matchSound = Gdx.audio.newSound(Gdx.files.internal("sounds/matchStart.wav"));
-        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shootSound.wav"));
+        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shootStar.mp3"));
         layout = new GlyphLayout();
         player = new Player();
         bullets = new ArrayList<Bullet>();
@@ -229,7 +229,7 @@ public class MyGdxGame extends ApplicationAdapter {
         if (state == GameState.START) {
             //start shit here
         } else if (state == GameState.IN_GAME) {
-            for (Bullet bullet : bullets) bullet.draw(batch);
+            for (Bullet bullet : bullets) bullet.draw(batch, time);
             player.draw(batch, time);
             for (Enemy enemy : enemies) enemy.draw(batch);
         } else {
