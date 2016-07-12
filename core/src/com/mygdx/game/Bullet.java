@@ -8,24 +8,28 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * Created by Ryan on 7/4/2016.
  */
 public class Bullet {
-    private AssetManager manager;
+    private static AssetManager manager;
     private float bulletSpeed;
     private Vector2 position, velocity;
     private Rectangle bounds;
-    public Sprite sprite;
+    public static Sprite sprite;
 
-    public Bullet() {
+    static {
         //memory management -- loading image into manager
         String image = "images/badlogic.jpg";
         manager = new AssetManager();
         manager.load("images/badlogic.jpg", Texture.class);
         manager.finishLoading();
         sprite = new Sprite(manager.get("images/badlogic.jpg", Texture.class));
+    }
+
+    public Bullet() {
 
         //sprite = new Sprite(new Texture("badlogic.jpg"));
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
@@ -60,4 +64,5 @@ public class Bullet {
     public Rectangle getBounds() {return bounds;}
 
     public void draw(SpriteBatch batch) {batch.draw(sprite, position.x, position.y, sprite.getWidth(), sprite.getHeight());}
+
 }
