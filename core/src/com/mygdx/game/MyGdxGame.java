@@ -111,7 +111,7 @@ public class MyGdxGame extends ApplicationAdapter {
         uiCamera.update();
 
 //        debug = new DebugButton(10, 10);
-        stateChanger = new StateChanger(20, 430);
+        stateChanger = new StateChanger(scrWidth / 2 - 50, scrHeight / 2 - 50);
 
         resetGame();
     }
@@ -279,20 +279,19 @@ public class MyGdxGame extends ApplicationAdapter {
             stateChanger.draw(batch);
 //            debug.draw(batch);
             layout.setText(font, "Press the Blue Button to Start!");
-            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 100);
         } else if (state == GameState.IN_GAME) {
-            stateChanger.draw(batch);
             layout.setText(font, "High Score: " + highScore);
-            font.draw(batch, layout, scrWidth - layout.width - 20, scrHeight - 10);
+            font.draw(batch, layout, scrWidth - layout.width - 150, scrHeight - 10);
             layout.setText(font, "Score: " + score);
-            font.draw(batch, layout, scrWidth / 2 - layout.width, scrHeight - 10);
+            font.draw(batch, layout, scrWidth / 2 - layout.width - 60, scrHeight - 10);
         } else { //state == GameState.GAME_OVER
             layout.setText(font, "Tap to restart!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
             layout.setText(font, "High Score: " + highScore);
-            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 70);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 150);
             layout.setText(font, "Score: " + score);
-            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 200);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 215);
         }
         batch.end();
     }
