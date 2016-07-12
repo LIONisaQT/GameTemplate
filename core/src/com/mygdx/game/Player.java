@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -58,17 +59,17 @@ public class Player {
     }
 
     //all movement code here
-//    public void tiltControls() {
-//        float deltaTime = Gdx.graphics.getDeltaTime();
-//        setAccel(-Gdx.input.getAccelerometerY(), Gdx.input.getAccelerometerX(), xFactor, yFactor);
-//
-//        //makes movement feel snappier, comment out for sluggish turning
-//        if (Gdx.input.getAccelerometerX() > 0 || Gdx.input.getAccelerometerX() < 0) getVelocity().x = 0;
-//        if (Gdx.input.getAccelerometerY() > 0 || Gdx.input.getAccelerometerY() < 0) getVelocity().y = 0;
-//
-//        getVelocity().add(getAccel().x, getAccel().y);
-//        getPosition().mulAdd(getVelocity(), deltaTime);
-//    }
+    public void tiltControls() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        setAccel(-Gdx.input.getAccelerometerY(), Gdx.input.getAccelerometerX(), xFactor, yFactor);
+
+        //makes movement feel snappier, comment out for sluggish turning
+        if (Gdx.input.getAccelerometerX() > 0 || Gdx.input.getAccelerometerX() < 0) getVelocity().x = 0;
+        if (Gdx.input.getAccelerometerY() > 0 || Gdx.input.getAccelerometerY() < 0) getVelocity().y = 0;
+
+        getVelocity().add(getAccel().x, getAccel().y);
+        getPosition().mulAdd(getVelocity(), deltaTime);
+    }
 
     //make player wrap around screen
     public void wrap() {
