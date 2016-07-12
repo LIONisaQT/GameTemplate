@@ -37,7 +37,7 @@ public class Enemy {
         setPosition(x + 600, y);
         velocity = new Vector2();
         bounds = new Rectangle();
-        setSpeed(300);
+        setSpeed(200);
     }
 
     public void move() {}

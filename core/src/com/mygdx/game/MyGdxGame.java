@@ -46,7 +46,7 @@ public class MyGdxGame extends ApplicationAdapter {
     public static OrthographicCamera camera; //camera is your game world camera
     public static OrthographicCamera uiCamera; //uiCamera is your heads-up display
     private int zombiesLives;
-    private DebugButton debug;
+//    private DebugButton debug;
     private StateChanger stateChanger;
     private Background BGanimation;
     private Joystick joystick;
@@ -110,7 +110,7 @@ public class MyGdxGame extends ApplicationAdapter {
         uiCamera.setToOrtho(false, scrWidth, scrHeight);
         uiCamera.update();
 
-        debug = new DebugButton(10, 10);
+//        debug = new DebugButton(10, 10);
         stateChanger = new StateChanger(20, 430);
 
         resetGame();
@@ -145,7 +145,6 @@ public class MyGdxGame extends ApplicationAdapter {
         float deltaTime = Gdx.graphics.getDeltaTime();
         for (Enemy enemy : enemies) {
             enemy.enemiesStateTime += deltaTime;
-            ;
         }
 
         BGanimation.bgStateTime += deltaTime;;
@@ -158,7 +157,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
         if (state == GameState.START) {
             score = 0;
-            if (debug.isPressed()) debug.action();
+//            if (debug.isPressed()) debug.action();
             if (stateChanger.isPressed()) {
                 stateChanger.action();
                 matchSound.play();
@@ -270,16 +269,16 @@ public class MyGdxGame extends ApplicationAdapter {
         batch.setProjectionMatrix(uiCamera.combined);
         batch.begin();
 
-        if (debug.debug) {
-            font.draw(batch, "Game state: " + MyGdxGame.state, 20, MyGdxGame.scrHeight - 20);
-            font.draw(batch, "Bullet count: " + bullets.size(), 20, MyGdxGame.scrHeight - 70);
-            font.draw(batch, "Number of enemies: " + enemies.size(), 20, MyGdxGame.scrHeight - 120);
-        }
+//        if (debug.debug) {
+//            font.draw(batch, "Game state: " + MyGdxGame.state, 20, MyGdxGame.scrHeight - 20);
+//            font.draw(batch, "Bullet count: " + bullets.size(), 20, MyGdxGame.scrHeight - 70);
+//            font.draw(batch, "Number of enemies: " + enemies.size(), 20, MyGdxGame.scrHeight - 120);
+//        }
 
         if (state == GameState.START) {
             stateChanger.draw(batch);
-            debug.draw(batch);
-            layout.setText(font, "Tap to start!");
+//            debug.draw(batch);
+            layout.setText(font, "Press the Blue Button to Start!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
         } else if (state == GameState.IN_GAME) {
             stateChanger.draw(batch);
@@ -293,7 +292,7 @@ public class MyGdxGame extends ApplicationAdapter {
             layout.setText(font, "High Score: " + highScore);
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 70);
             layout.setText(font, "Score: " + score);
-            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 100);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 200);
         }
         batch.end();
     }
