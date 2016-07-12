@@ -160,10 +160,11 @@ public class MyGdxGame extends ApplicationAdapter {
             score = 0;
             if (debug.isPressed()) debug.action();
             if (stateChanger.isPressed()) {
+                stateChanger.action();
                 matchSound.play();
                 for (int i = 0; i < Enemy.NUM_ENEMIES; i++)
                     enemies.add(new Enemy((float) Math.random() * scrWidth, (float) Math.random() * scrHeight));
-                    stateChanger.action();
+
                 }
             } else if (state == GameState.IN_GAME) {
                 for (Enemy enemy : enemies) {
@@ -174,7 +175,7 @@ public class MyGdxGame extends ApplicationAdapter {
                     preferences.putInteger("highScore", score);
                 }
                 preferences.flush();
-                if (stateChanger.isPressed()) stateChanger.action();
+//                if (stateChanger.isPressed()) stateChanger.action();
                 // check for tap index and shoot bullets
                 if (Gdx.input.justTouched() && !joystick.touchpad.isTouched()) {
                     tapIndex = 0;
@@ -207,9 +208,9 @@ public class MyGdxGame extends ApplicationAdapter {
                 //remove bullet and enemy when they collide
                 for (int j = 0; j < enemies.size(); j++) {
                     //player die
-//                if (enemies.get(j).getBounds().overlaps(player.getBounds())) {
-//                    state = GameState.GAME_OVER;
-//                }
+                    if (enemies.get(j).getBounds().overlaps(player.getBounds())) {
+                        state = GameState.GAME_OVER;
+                    }
                     //remove bullet and enemy when they collide
                     for (int i = 0; i < bullets.size(); i++) {
                         if (enemies.get(j).getBounds().overlaps(bullets.get(i).getBounds())) {
@@ -225,6 +226,8 @@ public class MyGdxGame extends ApplicationAdapter {
                             }
                         }
                     }
+
+
             } else { //state is GAME_OVER
                 if (score > highScore) {
                     highScore = score;
@@ -289,6 +292,8 @@ public class MyGdxGame extends ApplicationAdapter {
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
             layout.setText(font, "High Score: " + highScore);
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 70);
+            layout.setText(font, "Score: " + score);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 100);
         }
         batch.end();
     }
