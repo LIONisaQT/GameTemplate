@@ -42,12 +42,14 @@ public class MyGdxGame extends ApplicationAdapter {
     private GlyphLayout layout;
     protected static Vector2 gravity;
     private Player player;
+    private HP hpBar;
     private ArrayList<Bullet> bullets;
     private ArrayList<Enemy> enemies;
     private Music music;
     private Music music1;
     private Sound shootSound, matchSound;
     private Sprite background;
+    private Sprite bgStart;
 
 
     public static OrthographicCamera camera; //camera is your game world camera
@@ -60,10 +62,12 @@ public class MyGdxGame extends ApplicationAdapter {
 
     @Override
     public void create() {
+        hpBar = new HP();
         scrWidth = Gdx.graphics.getWidth();
         scrHeight = Gdx.graphics.getHeight();
         gravity = new Vector2();
-        background=new Sprite(new Texture("images/shawdow forrest.jpg"));
+        background = new Sprite(new Texture("images/shawdow forrest.jpg"));
+        bgStart = new Sprite(new Texture("images/bgstart.jpeg"));
 
         preferences = new Preferences("Preferences");
         //if theree are no high scores, then make one
@@ -113,7 +117,7 @@ public class MyGdxGame extends ApplicationAdapter {
         uiCamera.update();
 
         debug = new DebugButton(10, 10);
-        stateChanger = new StateChanger(scrWidth / 2 + 10, 10);
+        stateChanger = new StateChanger(scrWidth - 150, 10);
 
         Random randomNum = new Random();
         int songNum =randomNum.nextInt(2) + 1;
@@ -146,7 +150,7 @@ public class MyGdxGame extends ApplicationAdapter {
         player.reset();
         bullets.clear();
         enemies.clear();
-        score = 0;
+        hpBar.reset();
     }
 
 
@@ -172,10 +176,9 @@ public class MyGdxGame extends ApplicationAdapter {
             if (stateChanger.isPressed()) {
                 matchSound.play();
                 for (int i = 0; i < Enemy.NUM_ENEMIES; i++)
-                    enemies.add(new Enemy((float)Math.random() * scrWidth, (float)Math.random() * scrHeight));
+                    enemies.add(new Enemy((float)Math.random() * scrWidth, (float)Math.random() * scrHeight + 250));
                 for (int i = 0; i < Enemy.NUM_ENEMIES; i++)
-                    enemies.add(new Pika((float)Math.random() * scrWidth, (float)Math.random() * scrHeight));
-
+                    enemies.add(new Pika((float)Math.random() * scrWidth, (float)Math.random() * scrHeight + 250));
                 stateChanger.action();
             }
         }
@@ -206,17 +209,23 @@ public class MyGdxGame extends ApplicationAdapter {
                 }
             }
 
-            //remove bullet and enemy when they collide
+            //collision
             for (int j = 0; j < enemies.size(); j++) {
-                //player die
+                //player die when collide with enemy
                 if (enemies.get(j).getBounds().overlaps(player.getBounds())) {
-                    state = GameState.GAME_OVER;
+                    enemies.get(j).respawn();
+                    hpBar.hit();
+                    if (hpBar.health <= 0){
+                        state = GameState.GAME_OVER;
+                    }
+
                 }
                 //remove bullet and enemy when they collide
                 for (int i = 0; i < bullets.size(); i++)  {
                     if (enemies.get(j).getBounds().overlaps(bullets.get(i).getBounds()))  {
-                        enemies.remove(j);
+                        enemies.get(j).respawn();
                         bullets.remove(i);
+
                     }
                 }
             }
@@ -245,8 +254,8 @@ public class MyGdxGame extends ApplicationAdapter {
 
         font.setColor(Color.WHITE);
         if (state == GameState.START) {
+
             //start shit here
-            font.draw(batch, "text  ", 20, MyGdxGame.scrHeight - 20);
         } else if (state == GameState.IN_GAME) {
             for (Bullet bullet : bullets) bullet.draw(batch, time);
             player.draw(batch, time);
@@ -265,20 +274,21 @@ public class MyGdxGame extends ApplicationAdapter {
             font.draw(batch, "Number of enemies: " + enemies.size(), 20, MyGdxGame.scrHeight - 120);
             font.draw(batch, "Velocity: " + (int)player.getVelocity().x + ", " + (int)player.getVelocity().y, 20, MyGdxGame.scrHeight - 170);
             font.draw(batch, "Position: " + (int)player.getPosition().x + ", " + (int)player.getPosition().y, 20, MyGdxGame.scrHeight - 220);
+            font.draw(batch, "HP: " + hpBar.health, 20, MyGdxGame.scrHeight - 270);
+
         }
 
 
         if (state == GameState.START) {
+            batch.draw(bgStart,0,0,scrWidth,scrHeight);
             stateChanger.draw(batch);
-            debug.draw(batch);
-            layout.setText(font, "Tap to start!");
-            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
+            //debug.draw(batch);
+            layout.setText(font, "INSIDE THE SHADOW");
+            font.getData().setScale(1.46f);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 250);
         } else if (state == GameState.IN_GAME) {
             stateChanger.draw(batch);
-            layout.setText(font, "Score: " + score);
-            font.draw(batch, layout, scrWidth - layout.width - 20, scrHeight - 20);
-            layout.setText(font, "High score: " + highScore);
-            font.draw(batch, layout, scrWidth - layout.width - 20, scrHeight - 70);
+            hpBar.draw();
         } else { //state == GameState.GAME_OVER
             layout.setText(font, "Tap to restart!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
