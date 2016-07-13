@@ -269,11 +269,11 @@ public class MyGdxGame extends ApplicationAdapter {
         batch.setProjectionMatrix(uiCamera.combined);
         batch.begin();
 
-        if (debug.debug) {
-            font.draw(batch, "Game state: " + MyGdxGame.state, 20, MyGdxGame.scrHeight - 20);
-            font.draw(batch, "Bullet count: " + bullets.size(), 20, MyGdxGame.scrHeight - 70);
-            font.draw(batch, "Number of enemies: " + enemies.size(), 20, MyGdxGame.scrHeight - 120);
-        }
+//        if (debug.debug) {
+//            font.draw(batch, "Game state: " + MyGdxGame.state, 20, MyGdxGame.scrHeight - 20);
+//            font.draw(batch, "Bullet count: " + bullets.size(), 20, MyGdxGame.scrHeight - 70);
+//            font.draw(batch, "Number of enemies: " + enemies.size(), 20, MyGdxGame.scrHeight - 120);
+//        }
 
         if (state == GameState.START) {
             stateChanger.draw(batch);
