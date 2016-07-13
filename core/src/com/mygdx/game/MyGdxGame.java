@@ -254,7 +254,6 @@ public class MyGdxGame extends ApplicationAdapter {
             for (Bullet bullet : bullets) bullet.draw(batch, time);
             player.draw(batch, time);
             for (Enemy enemy : enemies) enemy.draw(batch);
-            hpBar.draw();
         } else {
             //gameover shit here
         }
@@ -283,6 +282,7 @@ public class MyGdxGame extends ApplicationAdapter {
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 250);
         } else if (state == GameState.IN_GAME) {
             stateChanger.draw(batch);
+            hpBar.draw();
         } else { //state == GameState.GAME_OVER
             layout.setText(font, "Tap to restart!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
