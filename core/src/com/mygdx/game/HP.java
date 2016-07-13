@@ -37,10 +37,13 @@ public class HP {
     }
 
     public void draw() {
-        renderer.begin();
-        renderer.setColor(Color.RED);
-        renderer.rect(x, y, sideWidth, height);
-        renderer.set(ShapeRenderer.ShapeType.Filled);
+        //draw outline
+//        renderer.begin();
+//        renderer.setColor(Color.RED);
+//        renderer.rect(x, y, sideWidth, height);
+//        renderer.end();
+        // draw fill
+        renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(Color.GREEN);
         renderer.rect(x, y, width, height);
         renderer.end();

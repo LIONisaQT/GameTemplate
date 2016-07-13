@@ -288,7 +288,6 @@ public class MyGdxGame extends ApplicationAdapter {
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 250);
         } else if (state == GameState.IN_GAME) {
             stateChanger.draw(batch);
-            hpBar.draw();
         } else { //state == GameState.GAME_OVER
             layout.setText(font, "Tap to restart!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
@@ -298,5 +297,8 @@ public class MyGdxGame extends ApplicationAdapter {
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2 - 100);
         }
         batch.end();
+        if (state == GameState.IN_GAME) {
+            hpBar.draw();
+        }
     }
 }
