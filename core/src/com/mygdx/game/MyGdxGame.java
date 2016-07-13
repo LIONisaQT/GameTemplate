@@ -98,7 +98,6 @@ public class MyGdxGame extends ApplicationAdapter {
         bullets = new ArrayList<Bullet>();
         enemies = new ArrayList<Enemy>();
 
-
         camera = new OrthographicCamera();
         camera.setToOrtho(false, scrWidth, scrHeight);
         uiCamera = new OrthographicCamera();
@@ -159,13 +158,15 @@ public class MyGdxGame extends ApplicationAdapter {
         for (Enemy enemy : enemies) {
             enemy.update();
         }
-
         if (state == GameState.START) {
             if (debug.isPressed()) debug.action();
             if (stateChanger.isPressed()) {
                 matchSound.play();
                 for (int i = 0; i < Enemy.NUM_ENEMIES; i++)
                     enemies.add(new Enemy((float)Math.random() * scrWidth, (float)Math.random() * scrHeight));
+                for (int i = 0; i < Enemy.NUM_ENEMIES; i++)
+                    enemies.add(new Pika((float)Math.random() * scrWidth, (float)Math.random() * scrHeight));
+
                 stateChanger.action();
             }
         }
