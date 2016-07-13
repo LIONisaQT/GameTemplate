@@ -51,7 +51,7 @@ public class Player {
         bounds = new Rectangle();
         xFactor = -300; //play with this value
         yFactor = -400; //play with this value
-        moveSpeed = 400;
+        moveSpeed = 500;
         objWidth = 90;
         objHeight = 100;
 
@@ -173,7 +173,7 @@ public class Player {
     }
 
     public void reset() {
-        setPosition(0, 0);
+        setPosition(MyGdxGame.scrWidth / 2, 0);
         setVelocity(0, 0);
     }
 
@@ -195,7 +195,7 @@ public class Player {
 
         }
 
-        }
+    }
 
 
     //one dimensional movement, third parameter controls up-down or left-right
@@ -245,5 +245,4 @@ public class Player {
         }
     }
 }
-
 

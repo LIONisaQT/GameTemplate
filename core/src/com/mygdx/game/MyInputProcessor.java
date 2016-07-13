@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.InputProcessor;
 
 /**
+<<<<<<< HEAD
  * Created by MissionBit on 7/8/16.
  */
 public class MyInputProcessor implements InputProcessor {
@@ -50,3 +51,4 @@ public class MyInputProcessor implements InputProcessor {
         return false;
     }
 }
+

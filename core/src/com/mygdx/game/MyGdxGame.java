@@ -24,13 +24,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class MyGdxGame extends ApplicationAdapter {
-    protected static float scrWidth;
-    protected static float scrHeight;
+    protected static float scrWidth, scrHeight;
 
     protected enum GameState {START, IN_GAME, GAME_OVER}
-
     protected static GameState state;
-    protected static Vector2 gravity;
+
+    //stuff you can save here
 
     protected static Preferences preferences;
     protected static int score, highScore;
@@ -41,6 +40,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private static Vector3 tap; //holds the position of tap location
     private BitmapFont font;
     private GlyphLayout layout;
+    protected static Vector2 gravity;
     private Player player;
     private ArrayList<Bullet> bullets;
     private ArrayList<Enemy> enemies;
@@ -64,6 +64,14 @@ public class MyGdxGame extends ApplicationAdapter {
         scrHeight = Gdx.graphics.getHeight();
         gravity = new Vector2();
         background=new Sprite(new Texture("images/shawdow forrest.jpg"));
+
+        preferences = new Preferences("Preferences");
+        //if theree are no high scores, then make one
+        if (preferences.getInteger("highScore", 0) == 0) {
+            highScore = 0;
+            preferences.putInteger("highScore", highScore);
+        } else
+            highScore = preferences.getInteger("highScore", 0); //set highScore to saved value
 
         preferences = new Preferences("Preferences");
         //if theree are no high scores, then make one
@@ -138,6 +146,7 @@ public class MyGdxGame extends ApplicationAdapter {
         player.reset();
         bullets.clear();
         enemies.clear();
+        score = 0;
     }
 
 
@@ -266,9 +275,17 @@ public class MyGdxGame extends ApplicationAdapter {
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
         } else if (state == GameState.IN_GAME) {
             stateChanger.draw(batch);
+            layout.setText(font, "Score: " + score);
+            font.draw(batch, layout, scrWidth - layout.width - 20, scrHeight - 20);
+            layout.setText(font, "High score: " + highScore);
+            font.draw(batch, layout, scrWidth - layout.width - 20, scrHeight - 70);
         } else { //state == GameState.GAME_OVER
             layout.setText(font, "Tap to restart!");
-            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
+            layout.setText(font, "Your score: " + score);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2 - 50);
+            layout.setText(font, "High score: " + highScore);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2 - 100);
         }
         batch.end();
     }
