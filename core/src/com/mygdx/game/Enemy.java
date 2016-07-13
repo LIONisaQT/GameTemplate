@@ -31,7 +31,7 @@ public class  Enemy {
     private Sprite ninjaEnemy5;
     private float objWidth;
     private float objHeight;
-
+public Enemy(){}
 
     public Enemy(float x, float y) {
         sprite = new Sprite(new Texture("images/Ninja_Enemy(1).png"));

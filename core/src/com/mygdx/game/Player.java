@@ -195,7 +195,7 @@ public class Player {
 
         }
 
-        }
+    }
 
 
     //one dimensional movement, third parameter controls up-down or left-right
@@ -244,5 +244,4 @@ public class Player {
         }
     }
 }
-
 

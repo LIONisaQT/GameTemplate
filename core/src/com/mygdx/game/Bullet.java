@@ -100,4 +100,3 @@ public class Bullet {
         batch.draw(star.getKeyFrame(time), getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());
     }
 }
-
