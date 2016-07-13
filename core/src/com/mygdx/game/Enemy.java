@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,13 +13,23 @@ import com.badlogic.gdx.math.Vector2;
  * Created by Ryan on 7/5/2016.
  */
 public class Enemy {
-    protected static final int NUM_ENEMIES = 0;
+    private static AssetManager manager;
+    protected static final int NUM_ENEMIES = 5;
     private float speed;
     private Vector2 position, velocity;
     private Rectangle bounds;
-    public Sprite sprite;
+    public static Sprite sprite;
+
+    static {
+        //memory management -- loading image into manager
+        String image = "images/badlogic.jpg";
+        manager = new AssetManager();
+        manager.load("images/badlogic.jpg", Texture.class);
+        manager.finishLoading();
+        sprite = new Sprite(manager.get("images/badlogic.jpg", Texture.class));
+    }
+
     public Enemy(float x, float y) {
-        sprite = new Sprite(new Texture("images/badlogic.jpg"));
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());
         position = new Vector2();
