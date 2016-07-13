@@ -42,6 +42,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private BitmapFont font;
     private GlyphLayout layout;
     private Player player;
+    private HP hpBar;
     private ArrayList<Bullet> bullets;
     private ArrayList<Enemy> enemies;
     private Music music;
@@ -60,6 +61,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
     @Override
     public void create() {
+        hpBar = new HP();
         scrWidth = Gdx.graphics.getWidth();
         scrHeight = Gdx.graphics.getHeight();
         gravity = new Vector2();
@@ -139,6 +141,9 @@ public class MyGdxGame extends ApplicationAdapter {
         player.reset();
         bullets.clear();
         enemies.clear();
+        hpBar.reset();
+
+
     }
 
 
@@ -165,7 +170,7 @@ public class MyGdxGame extends ApplicationAdapter {
             if (stateChanger.isPressed()) {
                 matchSound.play();
                 for (int i = 0; i < Enemy.NUM_ENEMIES; i++)
-                    enemies.add(new Enemy((float)Math.random() * scrWidth, (float)Math.random() * scrHeight));
+                    enemies.add(new Enemy((float)Math.random() * scrWidth, (float)Math.random() * scrHeight + 250));
                 stateChanger.action();
             }
         }
@@ -196,17 +201,23 @@ public class MyGdxGame extends ApplicationAdapter {
                 }
             }
 
-            //remove bullet and enemy when they collide
+            //collision
             for (int j = 0; j < enemies.size(); j++) {
-                //player die
+                //player die when collide with enemy
                 if (enemies.get(j).getBounds().overlaps(player.getBounds())) {
-                    state = GameState.GAME_OVER;
+                    enemies.get(j).respawn();
+                    hpBar.hit();
+                    if (hpBar.health <= 0){
+                        state = GameState.GAME_OVER;
+                    }
+
                 }
                 //remove bullet and enemy when they collide
                 for (int i = 0; i < bullets.size(); i++)  {
                     if (enemies.get(j).getBounds().overlaps(bullets.get(i).getBounds()))  {
-                        enemies.remove(j);
+                        enemies.get(j).respawn();
                         bullets.remove(i);
+
                     }
                 }
             }
@@ -241,6 +252,7 @@ public class MyGdxGame extends ApplicationAdapter {
             for (Bullet bullet : bullets) bullet.draw(batch, time);
             player.draw(batch, time);
             for (Enemy enemy : enemies) enemy.draw(batch);
+            hpBar.draw();
         } else {
             //gameover shit here
         }
@@ -255,6 +267,8 @@ public class MyGdxGame extends ApplicationAdapter {
             font.draw(batch, "Number of enemies: " + enemies.size(), 20, MyGdxGame.scrHeight - 120);
             font.draw(batch, "Velocity: " + (int)player.getVelocity().x + ", " + (int)player.getVelocity().y, 20, MyGdxGame.scrHeight - 170);
             font.draw(batch, "Position: " + (int)player.getPosition().x + ", " + (int)player.getPosition().y, 20, MyGdxGame.scrHeight - 220);
+            font.draw(batch, "HP: " + hpBar.health, 20, MyGdxGame.scrHeight - 270);
+
         }
 
 

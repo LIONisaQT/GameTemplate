@@ -51,7 +51,7 @@ public class Player {
         bounds = new Rectangle();
         xFactor = -300; //play with this value
         yFactor = -400; //play with this value
-        moveSpeed = 400;
+        moveSpeed = 500;
         objWidth = 90;
         objHeight = 100;
 
