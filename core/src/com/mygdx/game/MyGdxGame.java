@@ -39,6 +39,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private Player player;
     private ArrayList<Bullet> bullets;
     private ArrayList<Enemy> enemies;
+    private ArrayList<Blood> blood;
     private Music music;
     private Sound shootSound, matchSound;
 
@@ -55,18 +56,18 @@ public class MyGdxGame extends ApplicationAdapter {
         gravity = new Vector2();
 
         preferences = new Preferences("Preferences");
-        //if theree are no high scores, then make one
+        //if there are no high scores, then make one
         if (preferences.getInteger("highScore", 0) == 0) {
             highScore = 0;
             preferences.putInteger("highScore", highScore);
-        } else
-            highScore = preferences.getInteger("highScore", 0); //set highScore to saved value
+        }
+        else highScore = preferences.getInteger("highScore", 0); //set highScore to saved value
 
         /*
         =====EXPERIMENTAL SHIT=====
         manager = new AssetManager();
-        manager.setLoader(Bullet.class, new BulletLoader(new InternalFileHandleResolver()));
-        manager.load("Bullet.java", Bullet.class);
+        manager.setLoader(Bullet.classs, new BulletLoader(new InternalFileHandleResolver()));
+        manager.load("Bullet.java", Bullet.clas);
         manager.finishLoading();
         //manager.load(new AssetDescriptor<Bullet>("Bullet.java", Bullet.class, new BulletLoader.BulletParameter()));
         =====EXPERIMENTAL SHIT=====
@@ -85,6 +86,7 @@ public class MyGdxGame extends ApplicationAdapter {
         player = new Player();
         bullets = new ArrayList<Bullet>();
         enemies = new ArrayList<Enemy>();
+        blood = new ArrayList<Blood>();
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, scrWidth, scrHeight);
@@ -112,6 +114,7 @@ public class MyGdxGame extends ApplicationAdapter {
         player.reset();
         bullets.clear();
         enemies.clear();
+        blood.clear();
         score = 0;
     }
 
@@ -175,6 +178,7 @@ public class MyGdxGame extends ApplicationAdapter {
                 //remove bullet and enemy when they collide
                 for (int i = 0; i < bullets.size(); i++)  {
                     if (enemies.get(j).getBounds().overlaps(bullets.get(i).getBounds()))  {
+                        blood.add(new Blood(enemies.get(j).getPosition().x, enemies.get(j).getPosition().y));
                         enemies.remove(j);
                         bullets.remove(i);
                     }
@@ -208,6 +212,7 @@ public class MyGdxGame extends ApplicationAdapter {
             for (Bullet bullet : bullets) bullet.draw(batch);
             player.draw(batch);
             for (Enemy enemy : enemies) enemy.draw(batch);
+            for (Blood b : blood) b.draw(batch);
         } else {
             //gameover shit here
         }
@@ -218,11 +223,11 @@ public class MyGdxGame extends ApplicationAdapter {
         batch.begin();
 
         if (debug.debug) {
-            font.draw(batch, "Game state: " + MyGdxGame.state, 20, MyGdxGame.scrHeight - 20);
-            font.draw(batch, "Bullet count: " + bullets.size(), 20, MyGdxGame.scrHeight - 70);
-            font.draw(batch, "Number of enemies: " + enemies.size(), 20, MyGdxGame.scrHeight - 120);
-            font.draw(batch, "Velocity: " + (int)player.getVelocity().x + ", " + (int)player.getVelocity().y, 20, MyGdxGame.scrHeight - 170);
-            font.draw(batch, "Position: " + (int)player.getPosition().x + ", " + (int)player.getPosition().y, 20, MyGdxGame.scrHeight - 220);
+            font.draw(batch, "Game state: " + MyGdxGame.state, 20, scrHeight - 20);
+            font.draw(batch, "Bullet count: " + bullets.size(), 20, scrHeight - 70);
+            font.draw(batch, "Number of enemies: " + enemies.size(), 20, scrHeight - 120);
+            font.draw(batch, "Velocity: " + (int)player.getVelocity().x + ", " + (int)player.getVelocity().y, 20, scrHeight - 170);
+            font.draw(batch, "Position: " + (int)player.getPosition().x + ", " + (int)player.getPosition().y, 20, scrHeight - 220);
         }
 
         if (state == GameState.START) {

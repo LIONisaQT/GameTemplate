@@ -12,11 +12,12 @@ import com.badlogic.gdx.math.Vector2;
  * Created by Ryan on 7/5/2016.
  */
 public class Enemy {
-    protected static final int NUM_ENEMIES = 0;
+    protected static final int NUM_ENEMIES = 5;
     private float speed;
     private Vector2 position, velocity;
     private Rectangle bounds;
     public Sprite sprite;
+    public Enemy() {}
     public Enemy(float x, float y) {
         sprite = new Sprite(new Texture("images/badlogic.jpg"));
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
@@ -41,9 +42,7 @@ public class Enemy {
         getPosition().mulAdd(getVelocity(), deltaTime);
     }
 
-    public void update() {
-        setBounds();
-    }
+    public void update() {setBounds();}
 
     public void setSpeed(float spd) {speed = spd;}
 
@@ -63,3 +62,4 @@ public class Enemy {
 
     public void draw(SpriteBatch batch) {batch.draw(sprite, getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());}
 }
+
