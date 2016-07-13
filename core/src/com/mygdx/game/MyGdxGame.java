@@ -48,6 +48,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private Music music1;
     private Sound shootSound, matchSound;
     private Sprite background;
+    private Sprite bgStart;
 
 
     public static OrthographicCamera camera; //camera is your game world camera
@@ -63,7 +64,8 @@ public class MyGdxGame extends ApplicationAdapter {
         scrWidth = Gdx.graphics.getWidth();
         scrHeight = Gdx.graphics.getHeight();
         gravity = new Vector2();
-        background=new Sprite(new Texture("images/shawdow forrest.jpg"));
+        background = new Sprite(new Texture("images/shawdow forrest.jpg"));
+        bgStart = new Sprite(new Texture("images/bgstart.jpeg"));
 
         preferences = new Preferences("Preferences");
         //if theree are no high scores, then make one
@@ -106,7 +108,7 @@ public class MyGdxGame extends ApplicationAdapter {
         uiCamera.update();
 
         debug = new DebugButton(10, 10);
-        stateChanger = new StateChanger(scrWidth / 2 + 10, 10);
+        stateChanger = new StateChanger(scrWidth - 150, 10);
 
         Random randomNum = new Random();
         int songNum =randomNum.nextInt(2) + 1;
@@ -235,8 +237,8 @@ public class MyGdxGame extends ApplicationAdapter {
 
         font.setColor(Color.WHITE);
         if (state == GameState.START) {
+
             //start shit here
-            font.draw(batch, "text  ", 20, MyGdxGame.scrHeight - 20);
         } else if (state == GameState.IN_GAME) {
             for (Bullet bullet : bullets) bullet.draw(batch, time);
             player.draw(batch, time);
@@ -259,10 +261,12 @@ public class MyGdxGame extends ApplicationAdapter {
 
 
         if (state == GameState.START) {
+            batch.draw(bgStart,0,0,scrWidth,scrHeight);
             stateChanger.draw(batch);
-            debug.draw(batch);
-            layout.setText(font, "Tap to start!");
-            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
+            //debug.draw(batch);
+            layout.setText(font, "INSIDE THE SHADOW");
+            font.getData().setScale(1.46f);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 250);
         } else if (state == GameState.IN_GAME) {
             stateChanger.draw(batch);
         } else { //state == GameState.GAME_OVER

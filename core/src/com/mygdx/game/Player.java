@@ -173,7 +173,7 @@ public class Player {
     }
 
     public void reset() {
-        setPosition(0, 0);
+        setPosition(MyGdxGame.scrWidth / 2, 0);
         setVelocity(0, 0);
     }
 

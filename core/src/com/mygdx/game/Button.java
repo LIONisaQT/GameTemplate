@@ -16,13 +16,13 @@ public class Button {
     protected Rectangle bounds;
 
     public Button(float x, float y) {
-        sprite = new Sprite(new Texture("images/badlogic.jpg"));
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
-        sprite.setScale(sprite.getWidth(), sprite.getHeight());
+//        sprite.setScale(sprite.getWidth(), sprite.getHeight());
+        sprite = new Sprite(new Texture("images/badlogic.jpg"));
         position = new Vector2();
         setPosition(x, y);
         bounds = new Rectangle();
-        setBounds();
+       // setBounds();
     }
 
     //make buttons do whatever you want here
