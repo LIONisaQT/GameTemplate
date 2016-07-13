@@ -13,16 +13,10 @@ public class HP {
     float x, y, width, height, sideWidth;
 
     ShapeRenderer renderer;
-    ShapeRenderer outline;
 
     public HP() {
         renderer = new ShapeRenderer();
         renderer.setAutoShapeType(true);
-        renderer.setColor(Color.GREEN);
-
-        outline = new ShapeRenderer();
-        outline.setAutoShapeType(true);
-        outline.setColor(Color.RED);
 
         health = 5;
         width = 350;
@@ -30,7 +24,6 @@ public class HP {
         sideWidth = 350;
         x = MyGdxGame.scrWidth - width - 20;
         y = MyGdxGame.scrHeight- height - 20;
-
     }
 
     public void hit(){
@@ -44,12 +37,13 @@ public class HP {
     }
 
     public void draw() {
-        renderer.begin(ShapeRenderer.ShapeType.Filled);
+        renderer.begin();
+        renderer.setColor(Color.RED);
+        renderer.rect(x, y, sideWidth, height);
+        renderer.set(ShapeRenderer.ShapeType.Filled);
+        renderer.setColor(Color.GREEN);
         renderer.rect(x, y, width, height);
         renderer.end();
-        outline.begin();
-        outline.rect(x, y, sideWidth, height);
-        outline.end();
     }
 
 }
