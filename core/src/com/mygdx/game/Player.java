@@ -24,6 +24,7 @@ public class Player {
     protected static float first, //holds the y position of the initial tap location
                             last, //holds the y position of the last tap location
                      minDistance; //controls the threshold you need to pass in order to flick up to jump
+    protected boolean isJumping;
 
     public Player() {
         Gdx.input.setInputProcessor(inputProcessor);
@@ -37,6 +38,7 @@ public class Player {
         xFactor = -300; //play with this value, used with tiltControls()
         yFactor = -400; //play with this value, used with tiltControls()
         moveSpeed = 750; //play with this value, used with tapToMove()
+        isJumping = false;
     }
 
     //shoot bullets from the player!
@@ -68,15 +70,12 @@ public class Player {
 
     public void jump() {
         float deltaTime = Gdx.graphics.getDeltaTime();
-        if (minDistance > 10) {
-            if (first > last) {
-                setVelocity(0, 1500);
-                first = 0;
-                last = 0;
-                getVelocity().add(MyGdxGame.gravity);
-            }
+        if (!isJumping) {
+            setVelocity(0, 1500);
+            getVelocity().add(MyGdxGame.gravity);
+            getPosition().mulAdd(getVelocity(), deltaTime);
+            isJumping = true;
         }
-        getPosition().mulAdd(getVelocity(), deltaTime);
     }
 
     //all movement code here
@@ -124,7 +123,7 @@ public class Player {
     }
 
     public void reset() {
-        setPosition(MyGdxGame.scrWidth / 2 - getBounds().getWidth() / 2, MyGdxGame.scrHeight / 2);
+        setPosition(MyGdxGame.scrWidth / 2 - getBounds().getWidth() / 2, -MyGdxGame.scrHeight + sprite.getHeight());
         setVelocity(0, 0);
     }
 
@@ -140,9 +139,11 @@ public class Player {
         }
         if (MyGdxGame.state == MyGdxGame.GameState.IN_GAME) {
             getVelocity().add(MyGdxGame.gravity);
-            tapToMove();
-            jump();
+            getPosition().mulAdd(getVelocity(), deltaTime);
             wrap();
+            if (isJumping && position.y <= 0) {
+                isJumping = false;
+            }
         }
     }
 
