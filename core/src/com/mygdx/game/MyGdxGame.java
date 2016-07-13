@@ -178,7 +178,7 @@ public class MyGdxGame extends ApplicationAdapter {
         }
 
         else if (state == GameState.IN_GAME) {
-            for (Enemy enemy : enemies) {enemy.followPlayer(player);}
+            for (Enemy ninjaEnemy : enemies) {ninjaEnemy.followPlayer(player);}
             if (stateChanger.isPressed()) stateChanger.action();
             if (Gdx.input.justTouched()) {
                 /*
@@ -253,7 +253,7 @@ public class MyGdxGame extends ApplicationAdapter {
         } else if (state == GameState.IN_GAME) {
             for (Bullet bullet : bullets) bullet.draw(batch, time);
             player.draw(batch, time);
-            for (Enemy enemy : enemies) enemy.draw(batch);
+            for (Enemy enemy : enemies) enemy.draw(batch, time);
         } else {
             //gameover shit here
         }

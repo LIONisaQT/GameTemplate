@@ -241,7 +241,6 @@ public class Player {
             batch.draw(sprite, getPosition().x, getPosition().y, objWidth, objHeight);
         } else {
             batch.draw(ninja.getKeyFrame(time), getPosition().x, getPosition().y, ninja1.getWidth(), ninja1.getHeight());
-
         }
     }
 }

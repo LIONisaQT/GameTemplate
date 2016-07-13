@@ -9,9 +9,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Timer;
+
 
 import javafx.concurrent.Task;
+import java.util.ArrayList;
 
 /**
  * Created by Ryan on 7/5/2016.
@@ -111,5 +112,7 @@ public class  Enemy {
 
     public Rectangle getBounds() {return bounds;}
 
-    public void draw(SpriteBatch batch) {batch.draw(sprite, getPosition().x, getPosition().y, objWidth, objHeight);}
+    public void draw(SpriteBatch batch, float time) {
+        batch.draw(ninjaEnemy.getKeyFrame(time), getPosition().x, getPosition().y, ninjaEnemy1.getWidth(), ninjaEnemy1.getHeight());
+    }
 }
