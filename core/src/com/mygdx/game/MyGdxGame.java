@@ -24,13 +24,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class MyGdxGame extends ApplicationAdapter {
-    protected static float scrWidth;
-    protected static float scrHeight;
+    protected static float scrWidth, scrHeight;
 
     protected enum GameState {START, IN_GAME, GAME_OVER}
-
     protected static GameState state;
-    protected static Vector2 gravity;
+
+    //stuff you can save here
 
     protected static Preferences preferences;
     protected static int score, highScore;
@@ -41,6 +40,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private static Vector3 tap; //holds the position of tap location
     private BitmapFont font;
     private GlyphLayout layout;
+    protected static Vector2 gravity;
     private Player player;
     private HP hpBar;
     private ArrayList<Bullet> bullets;
@@ -77,6 +77,14 @@ public class MyGdxGame extends ApplicationAdapter {
         } else
             highScore = preferences.getInteger("highScore", 0); //set highScore to saved value
 
+        preferences = new Preferences("Preferences");
+        //if theree are no high scores, then make one
+        if (preferences.getInteger("highScore", 0) == 0) {
+            highScore = 0;
+            preferences.putInteger("highScore", highScore);
+        } else
+            highScore = preferences.getInteger("highScore", 0); //set highScore to saved value
+
         /*
         =====EXPERIMENTAL SHIT=====
         manager = new AssetManager();
@@ -101,7 +109,6 @@ public class MyGdxGame extends ApplicationAdapter {
         player = new Player();
         bullets = new ArrayList<Bullet>();
         enemies = new ArrayList<Enemy>();
-
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, scrWidth, scrHeight);
@@ -144,8 +151,6 @@ public class MyGdxGame extends ApplicationAdapter {
         bullets.clear();
         enemies.clear();
         hpBar.reset();
-
-
     }
 
 
@@ -166,13 +171,14 @@ public class MyGdxGame extends ApplicationAdapter {
         for (Enemy enemy : enemies) {
             enemy.update();
         }
-
         if (state == GameState.START) {
             if (debug.isPressed()) debug.action();
             if (stateChanger.isPressed()) {
                 matchSound.play();
                 for (int i = 0; i < Enemy.NUM_ENEMIES; i++)
                     enemies.add(new Enemy((float)Math.random() * scrWidth, (float)Math.random() * scrHeight + 250));
+                for (int i = 0; i < Enemy.NUM_ENEMIES; i++)
+                    enemies.add(new Pika((float)Math.random() * scrWidth, (float)Math.random() * scrHeight + 250));
                 stateChanger.action();
             }
         }
@@ -285,7 +291,11 @@ public class MyGdxGame extends ApplicationAdapter {
             hpBar.draw();
         } else { //state == GameState.GAME_OVER
             layout.setText(font, "Tap to restart!");
-            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
+            layout.setText(font, "Your score: " + score);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2 - 50);
+            layout.setText(font, "High score: " + highScore);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2 - 100);
         }
         batch.end();
     }
