@@ -16,7 +16,7 @@ public class Button {
     protected Rectangle bounds;
 
     public Button(float x, float y) {
-        sprite = new Sprite(new Texture("images/bluePauseButton.png"));
+        sprite = new Sprite(new Texture("images/zombieButton.png"));
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());
         position = new Vector2();

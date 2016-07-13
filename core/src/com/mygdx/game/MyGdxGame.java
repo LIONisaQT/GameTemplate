@@ -46,7 +46,7 @@ public class MyGdxGame extends ApplicationAdapter {
     public static OrthographicCamera camera; //camera is your game world camera
     public static OrthographicCamera uiCamera; //uiCamera is your heads-up display
     private int zombiesLives;
-//    private DebugButton debug;
+    private DebugButton debug;
     private StateChanger stateChanger;
     private Background BGanimation;
     private Joystick joystick;
@@ -110,7 +110,7 @@ public class MyGdxGame extends ApplicationAdapter {
         uiCamera.setToOrtho(false, scrWidth, scrHeight);
         uiCamera.update();
 
-//        debug = new DebugButton(10, 10);
+        debug = new DebugButton(10, 10);
         stateChanger = new StateChanger(scrWidth / 2 - 50, scrHeight / 2 - 50);
 
         resetGame();
@@ -157,7 +157,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
         if (state == GameState.START) {
             score = 0;
-//            if (debug.isPressed()) debug.action();
+            if (debug.isPressed()) debug.action();
             if (stateChanger.isPressed()) {
                 stateChanger.action();
                 matchSound.play();
@@ -269,16 +269,16 @@ public class MyGdxGame extends ApplicationAdapter {
         batch.setProjectionMatrix(uiCamera.combined);
         batch.begin();
 
-//        if (debug.debug) {
-//            font.draw(batch, "Game state: " + MyGdxGame.state, 20, MyGdxGame.scrHeight - 20);
-//            font.draw(batch, "Bullet count: " + bullets.size(), 20, MyGdxGame.scrHeight - 70);
-//            font.draw(batch, "Number of enemies: " + enemies.size(), 20, MyGdxGame.scrHeight - 120);
-//        }
+        if (debug.debug) {
+            font.draw(batch, "Game state: " + MyGdxGame.state, 20, MyGdxGame.scrHeight - 20);
+            font.draw(batch, "Bullet count: " + bullets.size(), 20, MyGdxGame.scrHeight - 70);
+            font.draw(batch, "Number of enemies: " + enemies.size(), 20, MyGdxGame.scrHeight - 120);
+        }
 
         if (state == GameState.START) {
             stateChanger.draw(batch);
-//            debug.draw(batch);
-            layout.setText(font, "Press the Blue Button to Start!");
+            debug.draw(batch);
+            layout.setText(font, "Press The Zombie If Ready");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 100);
         } else if (state == GameState.IN_GAME) {
             layout.setText(font, "High Score: " + highScore);
