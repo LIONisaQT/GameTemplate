@@ -9,11 +9,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
+
+import javafx.concurrent.Task;
 
 /**
  * Created by Ryan on 7/5/2016.
  */
-public class Enemy {
+public class  Enemy {
     protected static final int NUM_ENEMIES = 5;
     private float speed;
     private Vector2 position, velocity;
@@ -81,6 +84,12 @@ public class Enemy {
                 MathUtils.sin(rotation / 180 * MathUtils.PI) * getSpeed());
         getPosition().mulAdd(getVelocity(), deltaTime);
     }
+
+    public void respawn()  {
+        setPosition((float) Math.random() * MyGdxGame.scrWidth, (float) Math.random() * MyGdxGame.scrHeight + 250);
+
+    }
+
 
     public void update() {
         setBounds();
