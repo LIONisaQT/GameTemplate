@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -52,6 +53,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private Sprite bgStart;
     private ArrowControls dpad;
     public static int tapIndex;
+    private FreeTypeFontGenerator fontGenerator; //handles .ttf --> .fnt
 
 
     public static OrthographicCamera camera; //camera is your game world camera
@@ -99,8 +101,11 @@ public class MyGdxGame extends ApplicationAdapter {
         batch = new SpriteBatch();
         hpBar = new HP(batch);
         tap = new Vector3(); //location of tap
-        font = new BitmapFont(Gdx.files.internal("fonts/arial.fnt"),
-                Gdx.files.internal("fonts/arial.png"), false);
+        //FONT STUFF
+        fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Chicken Butt.ttf")); //replace font with whatever
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = (int)(90 * (scrWidth / 1196)); //lin did the math and i guess it works
+        font = fontGenerator.generateFont(parameter);
         music = Gdx.audio.newMusic(Gdx.files.internal("music/epicAdventure.mp3"));
         music1 = Gdx.audio.newMusic(Gdx.files.internal("music/japanese.mp3"));
         music.setLooping(true);
@@ -288,6 +293,7 @@ public class MyGdxGame extends ApplicationAdapter {
             batch.draw(bgStart,0,0,scrWidth,scrHeight);
             stateChanger.draw(batch);
             //debug.draw(batch);
+            font.setColor(Color.FIREBRICK);
             layout.setText(font, "NINJA SURVIVAL");
             font.getData().setScale(1.46f);
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 250);
