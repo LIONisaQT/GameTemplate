@@ -21,9 +21,9 @@ public class ArrowControls {
         size = 100;
         spriteSpeed = 10;
 
-        upButton = new Sprite(new Texture("images/badlogic.jpg"));
-        leftButton = new Sprite(new Texture("images/badlogic.jpg"));
-        rightButton = new Sprite(new Texture("images/badlogic.jpg"));
+        upButton = new Sprite(new Texture("images/arrowUp.png"));
+        leftButton = new Sprite(new Texture("images/arrowLeft.png"));
+        rightButton = new Sprite(new Texture("images/arrowRight.png"));
 
 
         upButton.setBounds(120, 100, size, size);

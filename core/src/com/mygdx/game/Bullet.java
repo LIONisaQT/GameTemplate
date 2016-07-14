@@ -15,19 +15,22 @@ import com.badlogic.gdx.math.Vector2;
  * Created by Ryan on 7/4/2016.
  */
 public class Bullet {
-    private AssetManager manager;
+    private static AssetManager manager;
     private float bulletSpeed;
     private Vector2 position, velocity;
     private Rectangle bounds;
     public Sprite sprite;
     private Animation star;
 
-
-    public Bullet() {
-        //memory management -- loading image into manager
+    static {
+    //memory management -- loading image into manager
         manager = new AssetManager();
         manager.load("images/star1.gif", Texture.class);
         manager.finishLoading();
+    }
+
+    public Bullet() {
+
         sprite = new Sprite(manager.get("images/star1.gif", Texture.class));
 
         //sprite = new Sprite(new Texture("badlogic.jpg"));

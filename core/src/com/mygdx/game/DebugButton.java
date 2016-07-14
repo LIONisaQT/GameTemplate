@@ -21,6 +21,8 @@ public class DebugButton extends Button {
         debug = false;
     }
 
+
+
     public void action() {
         debug = !debug;
     }

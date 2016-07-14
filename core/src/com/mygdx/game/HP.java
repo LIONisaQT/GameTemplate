@@ -46,7 +46,7 @@ public class HP {
         renderer.end();
         // draw fill
         renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.setColor(Color.GREEN);
+        renderer.setColor(Color.YELLOW);
         renderer.rect(x, y, width, height);
         renderer.end();
     }
