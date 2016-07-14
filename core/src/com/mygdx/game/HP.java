@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 
@@ -14,10 +15,11 @@ public class HP {
 
     ShapeRenderer renderer;
 
-    public HP() {
+    public HP(SpriteBatch batch) {
         renderer = new ShapeRenderer();
         renderer.setAutoShapeType(true);
-
+        renderer.setProjectionMatrix(batch.getProjectionMatrix());
+        renderer.setTransformMatrix(batch.getTransformMatrix());
         health = 5;
         width = 350;
         height = 50;
@@ -38,10 +40,10 @@ public class HP {
 
     public void draw() {
         //draw outline
-//        renderer.begin();
-//        renderer.setColor(Color.RED);
-//        renderer.rect(x, y, sideWidth, height);
-//        renderer.end();
+        renderer.begin(ShapeRenderer.ShapeType.Line);
+        renderer.setColor(Color.RED);
+        renderer.rect(x, y, sideWidth, height);
+        renderer.end();
         // draw fill
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(Color.GREEN);

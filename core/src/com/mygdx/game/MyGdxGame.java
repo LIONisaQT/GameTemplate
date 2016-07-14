@@ -62,7 +62,6 @@ public class MyGdxGame extends ApplicationAdapter {
 
     @Override
     public void create() {
-        hpBar = new HP();
         scrWidth = Gdx.graphics.getWidth();
         scrHeight = Gdx.graphics.getHeight();
         gravity = new Vector2();
@@ -96,6 +95,7 @@ public class MyGdxGame extends ApplicationAdapter {
         */
 
         batch = new SpriteBatch();
+        hpBar = new HP(batch);
         tap = new Vector3(); //location of tap
         font = new BitmapFont(Gdx.files.internal("fonts/arial.fnt"),
                 Gdx.files.internal("fonts/arial.png"), false);
