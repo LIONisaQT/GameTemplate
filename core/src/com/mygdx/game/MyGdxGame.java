@@ -111,6 +111,7 @@ public class MyGdxGame extends ApplicationAdapter {
         uiCamera.update();
 
         debug = new DebugButton(10, 10);
+//        debug = new DebugButton(scrWidth / 2 - 50, scrHeight / 2 - 50);
         stateChanger = new StateChanger(scrWidth / 2 - 50, scrHeight / 2 - 50);
 
         resetGame();
