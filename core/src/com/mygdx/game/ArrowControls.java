@@ -29,6 +29,9 @@ public class ArrowControls {
         upButton.setBounds(120, 100, size, size);
         leftButton.setBounds(20, 20, size, size);
         rightButton.setBounds(220, 20, size, size);
+        upButton.setAlpha(0.5f);
+        leftButton.setAlpha(0.5f);
+        rightButton.setAlpha(0.5f);
     }
 
     public void update(Player player) {

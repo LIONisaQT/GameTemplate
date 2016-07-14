@@ -118,7 +118,7 @@ public class Player {
     public void jump() {
         float deltaTime = Gdx.graphics.getDeltaTime();
         if (!isJumping) {
-            setVelocity(0, 1500);
+            setVelocity(0, 950);
             getVelocity().add(MyGdxGame.gravity);
             getPosition().mulAdd(getVelocity(), deltaTime);
             isJumping = true;

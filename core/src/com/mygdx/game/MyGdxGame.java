@@ -288,7 +288,7 @@ public class MyGdxGame extends ApplicationAdapter {
             batch.draw(bgStart,0,0,scrWidth,scrHeight);
             stateChanger.draw(batch);
             //debug.draw(batch);
-            layout.setText(font, "INSIDE THE SHADOW");
+            layout.setText(font, "NINJA SURVIVAL");
             font.getData().setScale(1.46f);
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 250);
         } else if (state == GameState.IN_GAME) {
