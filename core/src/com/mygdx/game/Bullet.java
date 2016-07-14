@@ -18,7 +18,7 @@ public class Bullet {
     private float bulletSpeed;
     private Vector2 position, velocity;
     private Rectangle bounds;
-    public static Sprite sprite;
+    public Sprite sprite;
 
     static {
         //memory management -- loading image into manager
@@ -26,11 +26,10 @@ public class Bullet {
         manager = new AssetManager();
         manager.load("images/badlogic.jpg", Texture.class);
         manager.finishLoading();
-        sprite = new Sprite(manager.get("images/badlogic.jpg", Texture.class));
     }
 
     public Bullet() {
-
+        sprite = new Sprite(manager.get("images/badlogic.jpg", Texture.class));
         //sprite = new Sprite(new Texture("badlogic.jpg"));
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());

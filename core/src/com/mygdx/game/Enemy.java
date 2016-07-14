@@ -18,7 +18,7 @@ public class Enemy {
     private float speed;
     private Vector2 position, velocity;
     private Rectangle bounds;
-    public static Sprite sprite;
+    public Sprite sprite;
 
     static {
         //memory management -- loading image into manager
@@ -26,10 +26,10 @@ public class Enemy {
         manager = new AssetManager();
         manager.load("images/badlogic.jpg", Texture.class);
         manager.finishLoading();
-        sprite = new Sprite(manager.get("images/badlogic.jpg", Texture.class));
     }
 
     public Enemy(float x, float y) {
+        sprite = new Sprite(manager.get("images/badlogic.jpg", Texture.class));
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());
         position = new Vector2();
