@@ -50,6 +50,8 @@ public class MyGdxGame extends ApplicationAdapter {
     private Sound shootSound, matchSound;
     private Sprite background;
     private Sprite bgStart;
+    private ArrowControls dpad;
+    public static int tapIndex;
 
 
     public static OrthographicCamera camera; //camera is your game world camera
@@ -109,6 +111,8 @@ public class MyGdxGame extends ApplicationAdapter {
         player = new Player();
         bullets = new ArrayList<Bullet>();
         enemies = new ArrayList<Enemy>();
+        dpad = new ArrowControls();
+        tapIndex = 0;
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, scrWidth, scrHeight);
@@ -160,13 +164,14 @@ public class MyGdxGame extends ApplicationAdapter {
       - you don't need to touch this at all
     */
     public static Vector3 getTapPosition() { //gets and translates coordinates of tap to game world coordinates
-        tap.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+        tap.set(Gdx.input.getX(tapIndex), Gdx.input.getY(tapIndex), 0);
         return camera.unproject(tap);
     }
 
     private void updateGame() {
         float deltaTime = Gdx.graphics.getDeltaTime();
         time += deltaTime;
+        dpad.update(player);
         player.update();
         for (Enemy enemy : enemies) {
             enemy.update();
@@ -186,13 +191,13 @@ public class MyGdxGame extends ApplicationAdapter {
         else if (state == GameState.IN_GAME) {
             for (Enemy ninjaEnemy : enemies) {ninjaEnemy.followPlayer(player);}
             if (stateChanger.isPressed()) stateChanger.action();
-            if (Gdx.input.justTouched()) {
-                /*
-                =====EXPERIMENTAL SHIT=====
-                Bullet bullet = manager.get("Bullet.java");
-                bullets.add(bullet);
-                =====EXPERIMENTAL SHIT=====
-                */
+            // shoot and move on input
+            if (Gdx.input.justTouched() && !dpad.isTouched()) {
+                tapIndex = 0;
+                shootSound.play();
+                player.shoot(bullets);
+            } else if (Gdx.input.justTouched() && Gdx.input.isTouched(0) && Gdx.input.isTouched(1) && dpad.isTouched()) {
+                tapIndex = 1;
                 shootSound.play();
                 player.shoot(bullets);
             }
@@ -288,6 +293,7 @@ public class MyGdxGame extends ApplicationAdapter {
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 250);
         } else if (state == GameState.IN_GAME) {
             stateChanger.draw(batch);
+            dpad.draw(batch);
         } else { //state == GameState.GAME_OVER
             layout.setText(font, "Tap to restart!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);

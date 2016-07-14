@@ -33,6 +33,8 @@ public class Player {
     protected static float first, //holds the objHeight position of the initial tap location
             last, //holds the objHeight position of the last tap location
             minDistance; //controls the threshold you need to pass in order to flick up to jump
+    protected boolean isJumping;
+
 
 
 
@@ -54,6 +56,7 @@ public class Player {
         moveSpeed = 500;
         objWidth = 90;
         objHeight = 100;
+        isJumping = false;
 
         //Player animation
         Texture frame1 = new Texture("images/Ninja_Player(1).png");
@@ -114,16 +117,12 @@ public class Player {
 
     public void jump() {
         float deltaTime = Gdx.graphics.getDeltaTime();
-        if (minDistance > 10) {
-            if (first > last) {            wrap();
-
-                setVelocity(0, 1000);
-                first = 0;
-                last = 0;
-                getVelocity().add(MyGdxGame.gravity);
-            }
+        if (!isJumping) {
+            setVelocity(0, 1500);
+            getVelocity().add(MyGdxGame.gravity);
+            getPosition().mulAdd(getVelocity(), deltaTime);
+            isJumping = true;
         }
-        getPosition().mulAdd(getVelocity(), deltaTime);
     }
 
     //all movement code here
@@ -189,12 +188,12 @@ public class Player {
         }
         if (MyGdxGame.state == MyGdxGame.GameState.IN_GAME) {
             getVelocity().add(MyGdxGame.gravity);
-            tapToMove();
-            jump();
+            getPosition().mulAdd(getVelocity(), deltaTime);
             wrap();
-
+            if (isJumping && position.y <= 0) {
+                isJumping = false;
+            }
         }
-
     }
 
 
