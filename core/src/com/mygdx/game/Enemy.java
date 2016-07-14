@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,22 +14,52 @@ import com.badlogic.gdx.math.Vector2;
  * Created by Ryan on 7/5/2016.
  */
 public class Enemy {
+    private static AssetManager manager;
     protected static final int NUM_ENEMIES = 10;
     private float speed;
     private Vector2 position, velocity;
     private Rectangle bounds;
     public Animation enemies;
     public float enemiesStateTime;
+    private static String img1, img2, img3, img4, img5, img6;
+
+    static {
+        //memory management -- loading image into manager
+        img1 = "images/ZombieFirstStep.png";
+        img2 = "images/ZombieSecondStep.png";
+        img3 = "images/ZombieThirdStep.png";
+        img4 = "images/ZombieFourthStep.png";
+        img5 = "images/ZombieFifthStep.png";
+        img6 = "images/ZombieSixthStep.png";
+        manager = new AssetManager();
+        manager.load(img1, Texture.class);
+        manager.load(img2, Texture.class);
+        manager.load(img3, Texture.class);
+        manager.load(img4, Texture.class);
+        manager.load(img5, Texture.class);
+        manager.load(img6, Texture.class);
+        manager.finishLoading();
+    }
 
     public Enemy(float x, float y) {
-        Texture frame1 = new Texture("images/ZombieFirstStep.png");
-        frame1.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        Texture frame2 = new Texture("images/ZombieSecondStep.png");
-        Texture frame3 = new Texture("images/ZombieThirdStep.png");
-        Texture frame4 = new Texture("images/ZombieFourthStep.png");
-        Texture frame5 = new Texture("images/ZombieFifthStep.png");
-        Texture frame6 = new Texture("images/ZombieSixthStep.png");
-        enemies = new Animation (0.05f, new TextureRegion(frame1), new TextureRegion(frame2), new TextureRegion(frame3), new TextureRegion(frame4), new TextureRegion(frame5), new TextureRegion(frame6));
+//        Texture frame1 = new Texture("images/ZombieFirstStep.png");
+//        Texture frame2 = new Texture("images/ZombieSecondStep.png");
+//        Texture frame3 = new Texture("images/ZombieThirdStep.png");
+//        Texture frame4 = new Texture("images/ZombieFourthStep.png");
+//        Texture frame5 = new Texture("images/ZombieFifthStep.png");
+//        Texture frame6 = new Texture("images/ZombieSixthStep.png");
+
+        enemies = new Animation (0.05f,
+                new TextureRegion(manager.get(img1, Texture.class)),
+                new TextureRegion(manager.get(img2, Texture.class)),
+                new TextureRegion(manager.get(img3, Texture.class)),
+                new TextureRegion(manager.get(img4, Texture.class)),
+                new TextureRegion(manager.get(img5, Texture.class)),
+                new TextureRegion(manager.get(img6, Texture.class)));
+//                new TextureRegion(frame3),
+//                new TextureRegion(frame4),
+//                new TextureRegion(frame5),
+//                new TextureRegion(frame6));
         enemies.setPlayMode(Animation.PlayMode.LOOP);
         enemiesStateTime = 0;
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);

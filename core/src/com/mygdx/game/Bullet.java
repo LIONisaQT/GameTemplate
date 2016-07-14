@@ -2,7 +2,6 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,18 +12,22 @@ import com.badlogic.gdx.math.Vector2;
  * Created by Ryan on 7/4/2016.
  */
 public class Bullet {
-    private AssetManager manager;
+    private static AssetManager manager;
     private float bulletSpeed;
     private Vector2 position, velocity;
     private Rectangle bounds;
     public Sprite sprite;
 
-    public Bullet() {
+
+    static {
         //memory management -- loading image into manager
         String image = "arrow2.png";
         manager = new AssetManager();
         manager.load("arrow2.png", Texture.class);
         manager.finishLoading();
+    }
+
+    public Bullet() {
         sprite = new Sprite(manager.get("arrow2.png", Texture.class));
 
         //sprite = new Sprite(new Texture("badlogic.jpg"));
