@@ -2,13 +2,11 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Disposable;
 
 /**
  * Created by Ryan on 7/4/2016.
@@ -24,7 +22,7 @@ public class Bullet {
         //memory management -- loading image into manager
         String image = "images/badlogic.jpg";
         manager = new AssetManager();
-        manager.load("images/badlogic.jpg", Texture.class);
+        manager.load(image, Texture.class);
         manager.finishLoading();
     }
 

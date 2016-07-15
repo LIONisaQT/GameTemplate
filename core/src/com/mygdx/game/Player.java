@@ -169,7 +169,5 @@ public class Player {
 
     public Rectangle getBounds() {return bounds;}
 
-    public void draw(SpriteBatch batch) {
-        batch.draw(sprite, getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());
-    }
+    public void draw(SpriteBatch batch) {batch.draw(sprite, getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());}
 }
