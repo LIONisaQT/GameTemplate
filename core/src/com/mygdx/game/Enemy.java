@@ -23,7 +23,7 @@ public class Enemy {
         //memory management -- loading image into manager
         String image = "images/badlogic.jpg";
         manager = new AssetManager();
-        manager.load("images/badlogic.jpg", Texture.class);
+        manager.load(image, Texture.class);
         manager.finishLoading();
     }
 
@@ -51,9 +51,7 @@ public class Enemy {
         getPosition().mulAdd(getVelocity(), deltaTime);
     }
 
-    public void update() {
-        setBounds();
-    }
+    public void update() {setBounds();}
 
     public void setSpeed(float spd) {speed = spd;}
 
@@ -73,3 +71,4 @@ public class Enemy {
 
     public void draw(SpriteBatch batch) {batch.draw(sprite, getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());}
 }
+

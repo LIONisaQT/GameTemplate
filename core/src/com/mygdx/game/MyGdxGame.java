@@ -2,9 +2,6 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetDescriptor;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -15,21 +12,19 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.mygdx.game.assets.loaders.BulletLoader;
 
 import java.util.ArrayList;
 
 public class MyGdxGame extends ApplicationAdapter {
+    protected static final int NUM_LEVELS = 10;
     protected static float scrWidth, scrHeight;
 
-    protected enum GameState {START, IN_GAME, GAME_OVER}
+    protected enum GameState {START, LEVEL_SELECT, IN_GAME, GAME_OVER}
     protected static GameState state;
 
     //stuff you can save here
     protected static Preferences preferences;
     protected static int score, highScore;
-
-    private AssetManager manager; //EXPERIMENTAL SHIT
 
     private SpriteBatch batch;
     private static Vector3 tap; //holds the position of tap location
@@ -46,8 +41,13 @@ public class MyGdxGame extends ApplicationAdapter {
     public static OrthographicCamera camera; //camera is your game world camera
     public static OrthographicCamera uiCamera; //uiCamera is your heads-up display
 
+    private Level currentLevel;
+    private ArrayList<Level> levels;
+
+    //buttons stuff
     private DebugButton debug;
     private StateChanger stateChanger;
+    private ArrayList<LevelButton> levelButtons;
 
     @Override
     public void create() {
@@ -62,16 +62,6 @@ public class MyGdxGame extends ApplicationAdapter {
             preferences.putInteger("highScore", highScore);
         }
         else highScore = preferences.getInteger("highScore", 0); //set highScore to saved value
-
-        /*
-        =====EXPERIMENTAL SHIT=====
-        manager = new AssetManager();
-        manager.setLoader(Bullet.classs, new BulletLoader(new InternalFileHandleResolver()));
-        manager.load("Bullet.java", Bullet.clas);
-        manager.finishLoading();
-        //manager.load(new AssetDescriptor<Bullet>("Bullet.java", Bullet.class, new BulletLoader.BulletParameter()));
-        =====EXPERIMENTAL SHIT=====
-        */
 
         batch = new SpriteBatch();
         tap = new Vector3(); //location of tap
@@ -97,6 +87,13 @@ public class MyGdxGame extends ApplicationAdapter {
         debug = new DebugButton(10, 10);
         stateChanger = new StateChanger(scrWidth / 2 + 10, 10);
 
+        levelButtons = new ArrayList<LevelButton>();
+        levels = new ArrayList<Level>();
+        for (int i = 0; i < NUM_LEVELS; i++) {
+            levelButtons.add(new LevelButton(i * scrWidth / NUM_LEVELS, scrHeight / 2));
+            levels.add(new Level(i));
+        }
+        currentLevel = new Level(0);
         resetGame();
     }
 
@@ -129,30 +126,32 @@ public class MyGdxGame extends ApplicationAdapter {
 
     private void updateGame() {
         player.update();
-        for (Enemy enemy : enemies) {
-            enemy.update();
-        }
 
         if (state == GameState.START) {
             if (debug.isPressed()) debug.action();
             if (stateChanger.isPressed()) {
                 matchSound.play();
-//                for (int i = 0; i < Enemy.NUM_ENEMIES; i++)
-//                    enemies.add(new Enemy((float)Math.random() * scrWidth, (float)Math.random() * scrHeight));
                 stateChanger.action();
             }
         }
 
+        else if (state == GameState.LEVEL_SELECT) {
+            for (int i = 0; i < NUM_LEVELS; i++) {
+                if (levelButtons.get(i).isPressed()) {
+                    currentLevel = levels.get(i + 1); //current level is whatever you tapped
+                    enemies = currentLevel.getEnemies();
+                    levelButtons.get(i).pressedAction();
+                }
+            }
+        }
+
         else if (state == GameState.IN_GAME) {
-            for (Enemy enemy : enemies) {enemy.followPlayer(player);}
+            for (Enemy enemy : enemies) {
+                enemy.update();
+                enemy.followPlayer(player);
+            }
             if (stateChanger.isPressed()) stateChanger.action();
             if (Gdx.input.justTouched()) {
-                /*
-                =====EXPERIMENTAL SHIT=====
-                Bullet bullet = manager.get("Bullet.java");
-                bullets.add(bullet);
-                =====EXPERIMENTAL SHIT=====
-                */
                 shootSound.play();
                 player.shoot(bullets);
             }
@@ -169,7 +168,7 @@ public class MyGdxGame extends ApplicationAdapter {
                 }
             }
 
-            //remove bullet and enemy when they collide
+            //enemy collision stuff
             for (int j = 0; j < enemies.size(); j++) {
                 //player die
                 if (enemies.get(j).getBounds().overlaps(player.getBounds())) {
@@ -208,6 +207,8 @@ public class MyGdxGame extends ApplicationAdapter {
         font.setColor(Color.WHITE);
         if (state == GameState.START) {
             //start shit here
+        } else if (state == GameState.LEVEL_SELECT) {
+            for (LevelButton lvlBtn : levelButtons) {lvlBtn.draw(batch);}
         } else if (state == GameState.IN_GAME) {
             for (Bullet bullet : bullets) bullet.draw(batch);
             player.draw(batch);

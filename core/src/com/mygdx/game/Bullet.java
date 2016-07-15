@@ -22,7 +22,7 @@ public class Bullet {
         //memory management -- loading image into manager
         String image = "images/badlogic.jpg";
         manager = new AssetManager();
-        manager.load("images/badlogic.jpg", Texture.class);
+        manager.load(image, Texture.class);
         manager.finishLoading();
     }
 
