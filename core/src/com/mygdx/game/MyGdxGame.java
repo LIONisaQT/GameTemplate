@@ -19,10 +19,11 @@ import java.util.ArrayList;
 
 
 public class MyGdxGame extends ApplicationAdapter {
-    protected static float scrWidth;
-    protected static float scrHeight;
+    protected static final int NUM_LEVELS = 2;
+    protected static float scrWidth, scrHeight;
 
-    protected enum GameState {START, IN_GAME, GAME_OVER}
+    protected enum GameState {START, LEVEL_SELECT, IN_GAME, GAME_OVER}
+
 
     protected static GameState state;
     protected static Vector2 gravity;
@@ -45,9 +46,12 @@ public class MyGdxGame extends ApplicationAdapter {
     private Sound shootSound, matchSound;
     public static OrthographicCamera camera; //camera is your game world camera
     public static OrthographicCamera uiCamera; //uiCamera is your heads-up display
+    private Level currentLevel;
+    private ArrayList<Level> levels;
     private int zombiesLives;
     private DebugButton debug;
     private StateChanger stateChanger;
+    private ArrayList<LevelButton> levelButtons;
     private Background BGanimation;
     private Joystick joystick;
     private static int tapIndex;
@@ -114,6 +118,14 @@ public class MyGdxGame extends ApplicationAdapter {
 //        debug = new DebugButton(scrWidth / 2 - 50, scrHeight / 2 - 50);
         stateChanger = new StateChanger(scrWidth / 2 - 50, scrHeight / 2 - 50);
 
+        levelButtons = new ArrayList<LevelButton>();
+        levels = new ArrayList<Level>();
+        for (int i = 0; i < NUM_LEVELS; i++) {
+            levelButtons.add(new LevelButton(i * scrWidth / NUM_LEVELS + 170, scrHeight / 2));
+            levels.add(new Level(i));
+        }
+        currentLevel = new Level(0);
+
         resetGame();
     }
 
@@ -167,7 +179,15 @@ public class MyGdxGame extends ApplicationAdapter {
                     enemies.add(new Enemy((float) Math.random() * scrWidth, (float) Math.random() * scrHeight));
 
                 }
-            } else if (state == GameState.IN_GAME) {
+            } else if (state == GameState.LEVEL_SELECT) {
+            for (int i = 0; i < NUM_LEVELS; i++) {
+                if (levelButtons.get(i).isPressed()) {
+                    currentLevel = levels.get(i + 1); //current level is whatever you tapped
+                    enemies = currentLevel.getEnemies();
+                    levelButtons.get(i).pressedAction();
+                }
+            }
+        } else if (state == GameState.IN_GAME) {
                 for (Enemy enemy : enemies) {
                     enemy.followPlayer(player);
                 }
@@ -252,6 +272,8 @@ public class MyGdxGame extends ApplicationAdapter {
         font.setColor(Color.WHITE);
         if (state == GameState.START) {
             //start shit here
+        } else if (state == GameState.LEVEL_SELECT) {
+            for (LevelButton lvlBtn : levelButtons) {lvlBtn.draw(batch);}
         } else if (state == GameState.IN_GAME) {
             for (Bullet bullet : bullets) bullet.draw(batch);
             player.draw(batch);
@@ -288,6 +310,13 @@ public class MyGdxGame extends ApplicationAdapter {
             font.draw(batch, layout, scrWidth - layout.width - 150, scrHeight - 10);
             layout.setText(font, "Score: " + score);
             font.draw(batch, layout, scrWidth / 2 - layout.width - 60, scrHeight - 10);
+        } else if (state == GameState.LEVEL_SELECT) {
+            layout.setText(font, "Choose a Level to Start!");
+            font.draw(batch, layout, scrWidth - layout.width - 220, scrHeight - 10);
+            layout.setText(font, "Easy Level");
+            font.draw(batch, layout,  100, scrHeight - 300);
+            layout.setText(font, "Hard Level");
+            font.draw(batch, layout, scrWidth - 370, scrHeight - 300);
         } else { //state == GameState.GAME_OVER
             layout.setText(font, "Tap to restart!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
