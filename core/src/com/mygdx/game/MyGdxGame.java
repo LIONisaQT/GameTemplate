@@ -158,6 +158,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
         if (state == GameState.START) {
             score = 0;
+            tapIndex = 0;
             if (debug.isPressed()) debug.action();
             if (stateChanger.isPressed()) {
                 stateChanger.action();
@@ -274,11 +275,12 @@ public class MyGdxGame extends ApplicationAdapter {
 //            font.draw(batch, "Game state: " + MyGdxGame.state, 20, MyGdxGame.scrHeight - 20);
 //            font.draw(batch, "Bullet count: " + bullets.size(), 20, MyGdxGame.scrHeight - 70);
 //            font.draw(batch, "Number of enemies: " + enemies.size(), 20, MyGdxGame.scrHeight - 120);
+//            font.draw(batch, "Tap Index: " + tapIndex, 20, MyGdxGame.scrHeight - 170);
 //        }
 
         if (state == GameState.START) {
             stateChanger.draw(batch);
-            debug.draw(batch);
+            //debug.draw(batch);
             layout.setText(font, "Press The Zombie If Ready");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 100);
         } else if (state == GameState.IN_GAME) {
