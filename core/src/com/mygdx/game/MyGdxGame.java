@@ -43,7 +43,7 @@ public class MyGdxGame extends ApplicationAdapter {
 //    private ArrayList<Blood> blood;
     private Animation zombies;
     private Music music;
-    protected static int score , highScore;
+    protected static int score, highScore;
     private Sound shootSound, matchSound;
     public static OrthographicCamera camera; //camera is your game world camera
     public static OrthographicCamera uiCamera; //uiCamera is your heads-up display
@@ -201,16 +201,37 @@ public class MyGdxGame extends ApplicationAdapter {
                 preferences.flush();
 //                if (stateChanger.isPressed()) stateChanger.action();
                 // check for tap index and shoot bullets
+                if (Gdx.input.justTouched()) {
+                    shootSound.play();
+                    player.shoot(bullets);
+                }
                 if (Gdx.input.justTouched() && !joystick.touchpad.isTouched()) {
                     tapIndex = 0;
-                    shootSound.play();
-                    player.shoot(bullets);
+//                    shootSound.play();
+//                    player.shoot(bullets);
+                    player.update();
                 }
+//                if (joystick.touchpad.isTouched() && !Gdx.input.justTouched()) {
+//                    player.update();
+//                }
+//                if (joystick.touchpad.isTouched() && Gdx.input.justTouched()) {
+//                    tapIndex = 0;
+//                    player.update();
+//                    player.shoot(bullets);
+//                }
+//                if (Gdx.input.justTouched() && joystick.touchpad.isTouched()) {
+//                    player.update();
+//                }
                 else if (Gdx.input.justTouched() && Gdx.input.isTouched(0) && joystick.touchpad.isTouched() && Gdx.input.isTouched(1)) {
                     tapIndex = 1;
-                    shootSound.play();
-                    player.shoot(bullets);
+                    player.update();
+//                    shootSound.play();
+//                    player.shoot(bullets);
                 }
+//                if (joystick.touchpad.isTouched() && !Gdx.input.justTouched()) {
+//                    tapIndex = 0;
+//                    player.update();
+//                }
 //                if (Gdx.input.justTouched()) {
 //                    long id = shootSound.play();
 //                    shootSound.setVolume(id, 1.0f);
@@ -322,7 +343,7 @@ public class MyGdxGame extends ApplicationAdapter {
             font.draw(batch, layout, scrWidth / 2 - layout.width - 60, scrHeight - 10);
         } else if (state == GameState.LEVEL_SELECT) {
             layout.setText(font, "Choose a Level to Start!");
-            font.draw(batch, layout, scrWidth - layout.width - 220, scrHeight - 10);
+            font.draw(batch, layout, scrWidth - layout.width - 230, scrHeight - 10);
             layout.setText(font, "Easy Level");
             font.draw(batch, layout,  100, scrHeight - 300);
             layout.setText(font, "Hard Level");
