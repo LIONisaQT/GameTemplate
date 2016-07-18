@@ -251,6 +251,7 @@ public class MyGdxGame extends ApplicationAdapter {
                     if (enemy.getBounds().overlaps(bullet.getBounds())) {
                         enemyIterator.remove();
                         bulletIterator.remove();
+                        break;
                     }
                 }
             }
@@ -342,6 +343,11 @@ public class MyGdxGame extends ApplicationAdapter {
         } else if (state == GameState.IN_GAME) {
             stateChanger.draw(batch);
             dpad.draw(batch);
+            currentLevel.getLevel();
+            font.getData().setScale(1f);
+            font.setColor(Color.WHITE);
+            layout.setText(font, "Level " + currentLevel.getLevel());
+            font.draw(batch, layout, 20, MyGdxGame.scrHeight - 20);
         } else if (state == GameState.GAME_OVER) {
             font.getData().setScale(1.7f);
             font.setColor(Color.FIREBRICK);
