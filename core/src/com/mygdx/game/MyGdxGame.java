@@ -40,6 +40,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private Player player;
     private ArrayList<Bullet> bullets;
     private ArrayList<Enemy> enemies;
+//    private ArrayList<Blood> blood;
     private Animation zombies;
     private Music music;
     protected static int score , highScore;
@@ -106,6 +107,7 @@ public class MyGdxGame extends ApplicationAdapter {
         player = new Player();
         bullets = new ArrayList<Bullet>();
         enemies = new ArrayList<Enemy>();
+//        blood = new ArrayList<Blood>();
         zombiesLives = 3;
         score = 0;
         camera = new OrthographicCamera();
@@ -142,6 +144,7 @@ public class MyGdxGame extends ApplicationAdapter {
         gravity.set(0, -25);
         player.reset();
         bullets.clear();
+//        blood.clear();
         enemies.clear();
     }
 
@@ -182,7 +185,7 @@ public class MyGdxGame extends ApplicationAdapter {
             } else if (state == GameState.LEVEL_SELECT) {
             for (int i = 0; i < NUM_LEVELS; i++) {
                 if (levelButtons.get(i).isPressed()) {
-                    currentLevel = levels.get(i + 1); //current level is whatever you tapped
+                    currentLevel = levels.get(i); //current level is whatever you tapped
                     enemies = currentLevel.getEnemies();
                     levelButtons.get(i).pressedAction();
                 }
@@ -240,9 +243,15 @@ public class MyGdxGame extends ApplicationAdapter {
                             zombiesLives = zombiesLives - 1;
                             if (zombiesLives == 0) {
                                 enemies.remove(j);
+//                                blood.add(new Blood(enemies.get(j).getPosition().x, enemies.get(j).getPosition().y));
                                 score++;
                                 zombiesLives = 3;
-                                enemies.add(new Enemy((float) Math.random() * scrWidth, (float) Math.random() * scrHeight));
+                                Enemy zombies;
+                                zombies = new Enemy((float) Math.random() * scrWidth, (float) Math.random() * scrHeight);
+                                enemies.add(zombies);
+                                if (currentLevel.getLevel() == 1) {
+                                    zombies.setSpeed(400);
+                                    }
                                 }
                             }
                         }
@@ -279,6 +288,7 @@ public class MyGdxGame extends ApplicationAdapter {
             player.draw(batch);
 //            joystick.draw(batch);
             for (Enemy enemy : enemies) enemy.draw(batch);
+//            for (Blood b : blood) b.draw(batch);
         } else {
             //gameover shit here
         }
