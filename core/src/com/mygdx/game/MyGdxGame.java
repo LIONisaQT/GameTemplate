@@ -201,14 +201,19 @@ public class MyGdxGame extends ApplicationAdapter {
                 preferences.flush();
 //                if (stateChanger.isPressed()) stateChanger.action();
                 // check for tap index and shoot bullets
-                if (Gdx.input.justTouched()) {
-                    shootSound.play();
-                    player.shoot(bullets);
+//                if (Gdx.input.justTouched()) {
+//                    shootSound.play();
+//                    player.shoot(bullets);
+//                    tapIndex = 0;
+//                }
+                if (joystick.touchpad.isTouched()) {
+                    tapIndex = 0;
+                    player.update();
                 }
                 if (Gdx.input.justTouched() && !joystick.touchpad.isTouched()) {
                     tapIndex = 0;
-//                    shootSound.play();
-//                    player.shoot(bullets);
+                    shootSound.play();
+                    player.shoot(bullets);
                     player.update();
                 }
 //                if (joystick.touchpad.isTouched() && !Gdx.input.justTouched()) {
@@ -225,8 +230,8 @@ public class MyGdxGame extends ApplicationAdapter {
                 else if (Gdx.input.justTouched() && Gdx.input.isTouched(0) && joystick.touchpad.isTouched() && Gdx.input.isTouched(1)) {
                     tapIndex = 1;
                     player.update();
-//                    shootSound.play();
-//                    player.shoot(bullets);
+                    shootSound.play();
+                    player.shoot(bullets);
                 }
 //                if (joystick.touchpad.isTouched() && !Gdx.input.justTouched()) {
 //                    tapIndex = 0;
