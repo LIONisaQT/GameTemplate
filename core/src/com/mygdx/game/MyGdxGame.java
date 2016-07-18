@@ -60,6 +60,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private FreeTypeFontGenerator fontGenerator; //handles .ttf --> .fnt
     private Iterator<Bullet> bulletIterator;
     private Iterator<Enemy> enemyIterator;
+    private ArrayList<Blood> blood;
 
 
     public static OrthographicCamera camera; //camera is your game world camera
@@ -78,6 +79,7 @@ public class MyGdxGame extends ApplicationAdapter {
         scrWidth = Gdx.graphics.getWidth();
         scrHeight = Gdx.graphics.getHeight();
         gravity = new Vector2();
+        blood = new ArrayList<Blood>();
         background = new Sprite(new Texture("images/shawdow forrest.jpg"));
         bgStart = new Sprite(new Texture("images/bgstart.jpeg"));
 
@@ -174,6 +176,7 @@ public class MyGdxGame extends ApplicationAdapter {
         bullets.clear();
         enemies.clear();
         hpBar.reset();
+        blood.clear();
     }
 
 
@@ -249,8 +252,10 @@ public class MyGdxGame extends ApplicationAdapter {
                 while(bulletIterator.hasNext()) {
                     Bullet bullet = bulletIterator.next();
                     if (enemy.getBounds().overlaps(bullet.getBounds())) {
+                        blood.add(new Blood(enemy.getPosition().x, enemy.getPosition().y));
                         enemyIterator.remove();
                         bulletIterator.remove();
+                        break;
                     }
                 }
             }
@@ -309,6 +314,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
             //start shit here
         } else if (state == GameState.IN_GAME) {
+            for (Blood b : blood) b.draw(batch);
             for (Bullet bullet : bullets) bullet.draw(batch, time);
             player.draw(batch, time);
             for (Enemy enemy : enemies) enemy.draw(batch, time);
