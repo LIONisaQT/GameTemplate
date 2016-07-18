@@ -20,7 +20,7 @@ public class HP {
         renderer.setAutoShapeType(true);
         renderer.setProjectionMatrix(batch.getProjectionMatrix());
         renderer.setTransformMatrix(batch.getTransformMatrix());
-        health = 5;
+        health = 100;
         width = 350;
         height = 50;
         sideWidth = 350;
@@ -35,7 +35,7 @@ public class HP {
 
     public void reset() {
         width = 350;
-        health = 5;
+        health = 100;
     }
 
     public void draw() {

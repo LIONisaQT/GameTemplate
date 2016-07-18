@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Ryan on 7/4/2016.
@@ -89,7 +90,7 @@ public class Player {
     }
 
     //shoot bullets from the player!
-    public void shoot(ArrayList<Bullet> bullets) {
+    public void shoot(List<Bullet> bullets) {
         //ew math, don't need to touch this at all
         float deltaX = MyGdxGame.getTapPosition().x - getPosition().x;
         float deltaY = MyGdxGame.getTapPosition().y - getPosition().y;
