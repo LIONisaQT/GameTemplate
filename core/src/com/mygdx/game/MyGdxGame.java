@@ -22,6 +22,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.assets.loaders.BulletLoader;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 public class MyGdxGame extends ApplicationAdapter {
@@ -29,6 +32,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
     protected enum GameState {START, IN_GAME, GAME_OVER}
     protected static GameState state;
+
 
     //stuff you can save here
 
@@ -44,8 +48,8 @@ public class MyGdxGame extends ApplicationAdapter {
     protected static Vector2 gravity;
     private Player player;
     private HP hpBar;
-    private ArrayList<Bullet> bullets;
-    private ArrayList<Enemy> enemies;
+    private List<Bullet> bullets;
+    private List<Enemy> enemies;
     private Music music;
     private Music music1;
     private Sound shootSound, matchSound;
@@ -54,11 +58,16 @@ public class MyGdxGame extends ApplicationAdapter {
     private ArrowControls dpad;
     public static int tapIndex;
     private FreeTypeFontGenerator fontGenerator; //handles .ttf --> .fnt
+    private Iterator<Bullet> bulletIterator;
+    private Iterator<Enemy> enemyIterator;
 
 
     public static OrthographicCamera camera; //camera is your game world camera
     public static OrthographicCamera uiCamera; //uiCamera is your heads-up display
 
+    private Level currentLevel;
+
+    //buttons stuff
     private DebugButton debug;
     private StateChanger stateChanger;
 
@@ -104,7 +113,7 @@ public class MyGdxGame extends ApplicationAdapter {
         //FONT STUFF
         fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Chicken Butt.ttf")); //replace font with whatever
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = (int)(90 * (scrWidth / 1196)); //lin did the math and i guess it works
+        parameter.size = (int) (90 * (scrWidth / 1196)); //lin did the math and i guess it works
         font = fontGenerator.generateFont(parameter);
         music = Gdx.audio.newMusic(Gdx.files.internal("music/epicAdventure.mp3"));
         music1 = Gdx.audio.newMusic(Gdx.files.internal("music/japanese.mp3"));
@@ -114,10 +123,13 @@ public class MyGdxGame extends ApplicationAdapter {
         shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shootStar.mp3"));
         layout = new GlyphLayout();
         player = new Player();
-        bullets = new ArrayList<Bullet>();
-        enemies = new ArrayList<Enemy>();
+        bullets = Collections.synchronizedList(new ArrayList<Bullet>());
+        enemies = Collections.synchronizedList(new ArrayList<Enemy>());
         dpad = new ArrowControls();
         tapIndex = 0;
+        bulletIterator = bullets.iterator();
+        enemyIterator = enemies.iterator();
+
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, scrWidth, scrHeight);
@@ -127,6 +139,9 @@ public class MyGdxGame extends ApplicationAdapter {
 
         debug = new DebugButton(10, 10);
         stateChanger = new StateChanger(scrWidth - 150, 10);
+
+
+        currentLevel = new Level(1);
 
         Random randomNum = new Random();
         int songNum =randomNum.nextInt(2) + 1;
@@ -141,7 +156,6 @@ public class MyGdxGame extends ApplicationAdapter {
         }
 
         resetGame();
-
 
     }
 
@@ -182,14 +196,12 @@ public class MyGdxGame extends ApplicationAdapter {
             enemy.update();
         }
         if (state == GameState.START) {
+            tapIndex = 0;
             if (debug.isPressed()) debug.action();
             if (stateChanger.isPressed()) {
                 matchSound.play();
-                for (int i = 0; i < Enemy.NUM_ENEMIES; i++)
-                    enemies.add(new Enemy((float)Math.random() * scrWidth, (float)Math.random() * scrHeight + 250));
-                for (int i = 0; i < Enemy.NUM_ENEMIES; i++)
-                    enemies.add(new Pika((float)Math.random() * scrWidth, (float)Math.random() * scrHeight + 250));
                 stateChanger.action();
+                enemies = currentLevel.getEnemies();
             }
         }
 
@@ -219,25 +231,54 @@ public class MyGdxGame extends ApplicationAdapter {
                 }
             }
 
-            //collision
-            for (int j = 0; j < enemies.size(); j++) {
+            // collision
+            enemyIterator = enemies.iterator();
+            while(enemyIterator.hasNext()) {
+                Enemy enemy = enemyIterator.next();
                 //player die when collide with enemy
-                if (enemies.get(j).getBounds().overlaps(player.getBounds())) {
-                    enemies.get(j).respawn();
+                if (enemy.getBounds().overlaps(player.getBounds())) {
                     hpBar.hit();
                     if (hpBar.health <= 0){
+                        score = currentLevel.getLevel() - 1;
                         state = GameState.GAME_OVER;
                     }
 
                 }
-                //remove bullet and enemy when they collide
-                for (int i = 0; i < bullets.size(); i++)  {
-                    if (enemies.get(j).getBounds().overlaps(bullets.get(i).getBounds()))  {
-                        enemies.get(j).respawn();
-                        bullets.remove(i);
-
+               //remove bullet and enemy when they collide
+                bulletIterator = bullets.iterator();
+                while(bulletIterator.hasNext()) {
+                    Bullet bullet = bulletIterator.next();
+                    if (enemy.getBounds().overlaps(bullet.getBounds())) {
+                        enemyIterator.remove();
+                        bulletIterator.remove();
                     }
                 }
+            }
+
+
+            //collision
+//            for (int j = 0; j < enemies.size(); j++) {
+//                //player die when collide with enemy
+//                if (enemies.get(j).getBounds().overlaps(player.getBounds())) {
+//                    hpBar.hit();
+//                    if (hpBar.health <= 0){
+//                        score = currentLevel.getLevel() - 1;
+//                        state = GameState.GAME_OVER;
+//                    }
+//
+//                }
+//                //remove bullet and enemy when they collide
+//                for (int i = 0; i < bullets.size(); i++)  {
+//                    if (enemies.get(j).getBounds().overlaps(bullets.get(i).getBounds()))  {
+//                        enemies.remove(j);
+//                        bullets.remove(i);
+//
+//                    }
+//                }
+//            }
+            if (enemies.size() == 0) {
+                currentLevel.setLevel(currentLevel.getLevel()+1);
+                enemies = currentLevel.getEnemies();
             }
         }
 
@@ -252,6 +293,7 @@ public class MyGdxGame extends ApplicationAdapter {
                 resetGame();
 
             }
+            currentLevel.setLevel(1);
         }
     }
 
@@ -300,11 +342,15 @@ public class MyGdxGame extends ApplicationAdapter {
         } else if (state == GameState.IN_GAME) {
             stateChanger.draw(batch);
             dpad.draw(batch);
-        } else { //state == GameState.GAME_OVER
+        } else if (state == GameState.GAME_OVER) {
+            font.getData().setScale(1.7f);
+            font.setColor(Color.FIREBRICK);
             layout.setText(font, "Tap to restart!");
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2 + 150);
+            font.getData().setScale(1f);
+            font.setColor(Color.WHITE);
+            layout.setText(font, "Levels Survived: " + score);
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
-            layout.setText(font, "Your score: " + score);
-            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2 - 50);
             layout.setText(font, "High score: " + highScore);
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2 - 100);
         }
