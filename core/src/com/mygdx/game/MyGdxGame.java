@@ -177,6 +177,7 @@ public class MyGdxGame extends ApplicationAdapter {
         enemies.clear();
         hpBar.reset();
         blood.clear();
+        score=0;
     }
 
 
@@ -242,7 +243,7 @@ public class MyGdxGame extends ApplicationAdapter {
                 if (enemy.getBounds().overlaps(player.getBounds())) {
                     hpBar.hit();
                     if (hpBar.health <= 0){
-                        score = currentLevel.getLevel() - 1;
+                        score = currentLevel.getLevel();
                         state = GameState.GAME_OVER;
                     }
 

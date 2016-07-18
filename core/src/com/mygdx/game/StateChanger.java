@@ -29,10 +29,15 @@ public class StateChanger extends Button {
 
     public void draw(SpriteBatch batch) {
         if (MyGdxGame.state == MyGdxGame.GameState.START) {
+            setPosition(MyGdxGame.scrWidth - 150, 10);
+            setBounds();
             batch.draw(sprite, position.x, position.y, sprite.getWidth(), sprite.getHeight());
         }
         else if (MyGdxGame.state == MyGdxGame.GameState.IN_GAME) {
-            batch.draw(stopButton, MyGdxGame.scrWidth - 86, 10, stopButton.getWidth(), stopButton.getHeight());
+            batch.draw(stopButton, 250, MyGdxGame.scrHeight - 80, stopButton.getWidth(), stopButton.getHeight());
+            setPosition(250, MyGdxGame.scrHeight - 80 );
+            setBounds();
+
         }
 
     }
