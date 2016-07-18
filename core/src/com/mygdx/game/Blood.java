@@ -17,14 +17,14 @@ public class Blood {
 
     static {
         //memory management -- loading image into manager
-        String image = "images/badlogic.jpg";
+        String image = "images/blood.png";
         manager = new AssetManager();
         manager.load(image, Texture.class);
         manager.finishLoading();
     }
 
     public Blood(float x, float y) {
-        sprite = new Sprite(manager.get("images/badlogic.jpg", Texture.class));
+        sprite = new Sprite(manager.get("images/blood.png", Texture.class));
         sprite.setSize(100, 100);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());
         position = new Vector2();
