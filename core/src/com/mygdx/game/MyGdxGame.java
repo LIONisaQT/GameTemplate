@@ -43,7 +43,7 @@ public class MyGdxGame extends ApplicationAdapter {
 //    private ArrayList<Blood> blood;
     private Animation zombies;
     private Music music;
-    protected static int score, highScore;
+    protected static int score, easyHighScore, hardHighScore;
     private Sound shootSound, matchSound;
     public static OrthographicCamera camera; //camera is your game world camera
     public static OrthographicCamera uiCamera; //uiCamera is your heads-up display
@@ -77,12 +77,19 @@ public class MyGdxGame extends ApplicationAdapter {
 
         preferences = new Preferences("Preferences");
         //if there are no high scores then make one
-        if (preferences.getInteger("highScore", 0) == 0) {
-            highScore = 0;
-            preferences.putInteger("highScore", highScore);
+        if (preferences.getInteger("easyHighScore", 0) == 0) {
+            easyHighScore = 0;
+            preferences.putInteger("easyHighScore", easyHighScore);
         }else {
-         highScore = preferences.getInteger("highScore", 0);
+         easyHighScore = preferences.getInteger("easyHighScore", 0);
         //set highscore to set value
+        }
+        if (preferences.getInteger("hardHighScore", 0) == 0) {
+            hardHighScore = 0;
+            preferences.putInteger("hardHighScore", hardHighScore);
+        }else {
+            hardHighScore = preferences.getInteger("hardHighScore", 0);
+            //set highscore to set value
         }
 
         /*
@@ -194,11 +201,20 @@ public class MyGdxGame extends ApplicationAdapter {
                 for (Enemy enemy : enemies) {
                     enemy.followPlayer(player);
                 }
-                if (score > highScore) {
-                    highScore = score;
-                    preferences.putInteger("highScore", score);
+                if (currentLevel.getLevel() == 0) {
+                    if (score > easyHighScore) {
+                        easyHighScore = score;
+                        preferences.putInteger("easyHighScore", score);
+                    }
+                    preferences.flush();
                 }
-                preferences.flush();
+                if (currentLevel.getLevel() == 1) {
+                    if (score > hardHighScore) {
+                        hardHighScore = score;
+                        preferences.putInteger("hardHighScore", score);
+                    }
+                    preferences.flush();
+                }
 //                if (stateChanger.isPressed()) stateChanger.action();
                 // check for tap index and shoot bullets
 //                if (Gdx.input.justTouched()) {
@@ -285,11 +301,20 @@ public class MyGdxGame extends ApplicationAdapter {
 
 
             } else { //state is GAME_OVER
-                if (score > highScore) {
-                    highScore = score;
-                    preferences.putInteger("highScore", score);
+                if (currentLevel.getLevel() == 0) {
+                    if (score > easyHighScore) {
+                        easyHighScore = score;
+                        preferences.putInteger("easyHighScore", score);
+                    }
+                    preferences.flush(); //saves
                 }
-            preferences.flush(); //saves
+                if (currentLevel.getLevel() == 1) {
+                    if (score > hardHighScore) {
+                        hardHighScore = score;
+                        preferences.putInteger("hardHighScore", score);
+                    }
+                    preferences.flush(); //saves
+                }
 
                 if (Gdx.input.justTouched()) {
                     resetGame();
@@ -342,10 +367,18 @@ public class MyGdxGame extends ApplicationAdapter {
             layout.setText(font, "Press The Zombie If Ready");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 100);
         } else if (state == GameState.IN_GAME) {
-            layout.setText(font, "High Score: " + highScore);
-            font.draw(batch, layout, scrWidth - layout.width - 150, scrHeight - 10);
-            layout.setText(font, "Score: " + score);
-            font.draw(batch, layout, scrWidth / 2 - layout.width - 60, scrHeight - 10);
+            if (currentLevel.getLevel() == 0) {
+                layout.setText(font, "High Score: " + easyHighScore);
+                font.draw(batch, layout, scrWidth - layout.width - 150, scrHeight - 10);
+                layout.setText(font, "Score: " + score);
+                font.draw(batch, layout, scrWidth / 2 - layout.width - 60, scrHeight - 10);
+            }
+            if (currentLevel.getLevel() == 1) {
+                layout.setText(font, "High Score: " + hardHighScore);
+                font.draw(batch, layout, scrWidth - layout.width - 150, scrHeight - 10);
+                layout.setText(font, "Score: " + score);
+                font.draw(batch, layout, scrWidth / 2 - layout.width - 60, scrHeight - 10);
+            }
         } else if (state == GameState.LEVEL_SELECT) {
             layout.setText(font, "Choose a Level to Start!");
             font.draw(batch, layout, scrWidth - layout.width - 230, scrHeight - 10);
@@ -356,10 +389,18 @@ public class MyGdxGame extends ApplicationAdapter {
         } else { //state == GameState.GAME_OVER
             layout.setText(font, "Tap to restart!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
-            layout.setText(font, "High Score: " + highScore);
-            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 150);
-            layout.setText(font, "Score: " + score);
-            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 215);
+            if (currentLevel.getLevel() == 0) {
+                layout.setText(font, "High Score: " + easyHighScore);
+                font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 150);
+                layout.setText(font, "Score: " + score);
+                font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 215);
+            }
+            if (currentLevel.getLevel() == 1) {
+                layout.setText(font, "High Score: " + hardHighScore);
+                font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 150);
+                layout.setText(font, "Score: " + score);
+                font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 215);
+            }
         }
         batch.end();
     }
