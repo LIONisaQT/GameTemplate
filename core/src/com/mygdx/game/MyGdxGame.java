@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -31,8 +32,9 @@ public class MyGdxGame extends ApplicationAdapter {
 
     private AssetManager manager; //EXPERIMENTAL SHIT
 
-    Music sound1, sound2;
+    Music sound1, sound2, scaredSound;
     boolean playSong;
+    boolean playScared;
     public static SpriteBatch batch;
     private static Vector3 tap; //holds the position of tap location
     private BitmapFont font;
@@ -56,6 +58,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private Background BGanimation;
     private Joystick joystick;
     private static int tapIndex;
+    private FreeTypeFontGenerator fontGenerator; //handles .ttf --> .fnt
 
     @Override
     public void create() {
@@ -64,15 +67,18 @@ public class MyGdxGame extends ApplicationAdapter {
 
         sound1 = Gdx.audio.newMusic(Gdx.files.internal("music/1.mp3"));
         sound2 = Gdx.audio.newMusic(Gdx.files.internal("music/2.mp3"));
+        scaredSound = Gdx.audio.newMusic(Gdx.files.internal("sounds/ohMyGod.mp3"));
+        scaredSound.setVolume(100f);
         sound1.play();
-        sound2.play();
         playSong = true;
+        playScared = true;
         sound1.setLooping(true);
         sound2.setLooping(true);
         scrWidth = Gdx.graphics.getWidth();
         scrHeight = Gdx.graphics.getHeight();
         gravity = new Vector2();
         joystick = new Joystick();
+
         tapIndex = 0;
 
         preferences = new Preferences("Preferences");
@@ -104,7 +110,12 @@ public class MyGdxGame extends ApplicationAdapter {
 
         batch = new SpriteBatch();
         tap = new Vector3(); //location of tap
-        font = new BitmapFont(Gdx.files.internal("fonts/arial.fnt"), Gdx.files.internal("fonts/arial.png"), false);
+        //font = new BitmapFont(Gdx.files.internal("fonts/arial.fnt"), Gdx.files.internal("fonts/arial.png"), false);
+        //FONT STUFF
+        fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/BloodLust.ttf")); //replace font with whatever
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = (int)(26 * (scrWidth / 1196)); //lin did the math and i guess it works
+        font = fontGenerator.generateFont(parameter);
 //        music = Gdx.audio.newMusic(Gdx.files.internal("music/bgm1.mp3"));
 //        music.setLooping(true);
 //        music.play();
@@ -153,6 +164,7 @@ public class MyGdxGame extends ApplicationAdapter {
         bullets.clear();
 //        blood.clear();
         enemies.clear();
+        playScared = true;
     }
 
     /*
@@ -198,6 +210,13 @@ public class MyGdxGame extends ApplicationAdapter {
                 }
             }
         } else if (state == GameState.IN_GAME) {
+                if (playScared == true) {
+                    scaredSound.play();
+                    playScared = false;
+                }
+                if (playScared == false) {
+                    sound2.play();
+                }
                 for (Enemy enemy : enemies) {
                     enemy.followPlayer(player);
                 }
@@ -329,7 +348,8 @@ public class MyGdxGame extends ApplicationAdapter {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         BGanimation.draw(batch);
-        font.setColor(Color.WHITE);
+        font.setColor(Color.SALMON);
+        font.getData().setScale(3f);
         if (state == GameState.START) {
             //start shit here
         } else if (state == GameState.LEVEL_SELECT) {
@@ -381,7 +401,7 @@ public class MyGdxGame extends ApplicationAdapter {
             }
         } else if (state == GameState.LEVEL_SELECT) {
             layout.setText(font, "Choose a Level to Start!");
-            font.draw(batch, layout, scrWidth - layout.width - 230, scrHeight - 10);
+            font.draw(batch, layout, scrWidth - layout.width - 200, scrHeight - 10);
             layout.setText(font, "Easy Level");
             font.draw(batch, layout,  100, scrHeight - 300);
             layout.setText(font, "Hard Level");
