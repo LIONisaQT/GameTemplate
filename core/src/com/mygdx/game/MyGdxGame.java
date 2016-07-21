@@ -33,7 +33,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private AssetManager manager; //EXPERIMENTAL SHIT
 
     Music sound1, sound2, scaredSound;
-    boolean playSong;
+    boolean playSong, scaryTalking;
     boolean playScared;
     public static SpriteBatch batch;
     private static Vector3 tap; //holds the position of tap location
@@ -68,10 +68,11 @@ public class MyGdxGame extends ApplicationAdapter {
         sound1 = Gdx.audio.newMusic(Gdx.files.internal("music/1.mp3"));
         sound2 = Gdx.audio.newMusic(Gdx.files.internal("music/2.mp3"));
         scaredSound = Gdx.audio.newMusic(Gdx.files.internal("sounds/ohMyGod.mp3"));
-        scaredSound.setVolume(100f);
+        scaredSound.setVolume(2000f);
         sound1.play();
         playSong = true;
         playScared = true;
+        scaryTalking = true;
         sound1.setLooping(true);
         sound2.setLooping(true);
         scrWidth = Gdx.graphics.getWidth();
@@ -216,6 +217,7 @@ public class MyGdxGame extends ApplicationAdapter {
                 }
                 if (playScared == false) {
                     sound2.play();
+                    scaryTalking = false;
                 }
                 for (Enemy enemy : enemies) {
                     enemy.followPlayer(player);
@@ -320,6 +322,10 @@ public class MyGdxGame extends ApplicationAdapter {
 
 
             } else { //state is GAME_OVER
+                if (scaryTalking == false) {
+                    sound2.pause();
+                    sound2.stop();
+                }
                 if (currentLevel.getLevel() == 0) {
                     if (score > easyHighScore) {
                         easyHighScore = score;
@@ -407,6 +413,10 @@ public class MyGdxGame extends ApplicationAdapter {
             layout.setText(font, "Hard Level");
             font.draw(batch, layout, scrWidth - 370, scrHeight - 300);
         } else { //state == GameState.GAME_OVER
+            if (score == easyHighScore && score > 0 || score == hardHighScore && score > 0) {
+                layout.setText(font, "New HighScore!");
+                font.draw(batch, layout, scrWidth / 2 - layout.width / 2 - 10, Gdx.graphics.getHeight() - 94);
+            }
             layout.setText(font, "Tap to restart!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
             if (currentLevel.getLevel() == 0) {
