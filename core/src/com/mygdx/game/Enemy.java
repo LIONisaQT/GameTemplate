@@ -64,11 +64,16 @@ public class  Enemy {
         ninjaEnemy3 = new Sprite(manager.get("images/Ninja_Enemy(3).png", Texture.class));
         ninjaEnemy4 = new Sprite(manager.get("images/Ninja_Enemy(4).png", Texture.class));
         ninjaEnemy5 = new Sprite(manager.get("images/Ninja_Enemy(5).png", Texture.class));
-        ninjaEnemy1.setScale(objWidth, objHeight);
-        ninjaEnemy2.setScale(objWidth, objHeight);
-        ninjaEnemy3.setScale(objWidth, objHeight);
-        ninjaEnemy4.setScale(objWidth, objHeight);
-        ninjaEnemy5.setScale(objWidth, objHeight);
+        ninjaEnemy1.setScale(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninjaEnemy2.setScale(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninjaEnemy3.setScale(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninjaEnemy4.setScale(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninjaEnemy5.setScale(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninjaEnemy1.setSize(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninjaEnemy2.setSize(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninjaEnemy3.setSize(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninjaEnemy4.setSize(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninjaEnemy5.setSize(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
         ninjaEnemy = new Animation(0.05f, new TextureRegion(ninjaEnemy1), new TextureRegion(ninjaEnemy2), new TextureRegion(ninjaEnemy3), new TextureRegion(ninjaEnemy4), new TextureRegion(ninjaEnemy5));
         ninjaEnemy.setPlayMode(Animation.PlayMode.LOOP);
     }
@@ -108,7 +113,7 @@ public class  Enemy {
 
     public Vector2 getVelocity() {return velocity;}
 
-    public void setBounds() {bounds.set(getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());}
+    public void setBounds() {bounds.set(getPosition().x, getPosition().y, ninjaEnemy1.getWidth(), ninjaEnemy1.getHeight());}
 
     public Rectangle getBounds() {return bounds;}
 

@@ -31,7 +31,7 @@ public class Level {
     public ArrayList<Enemy> getEnemies() {
         ArrayList<Enemy> enemies = new ArrayList<Enemy>();
         for (int i = 0; i < level * 5; i++) {
-            Enemy ninja = new Enemy((float) Math.random() * MyGdxGame.scrWidth, (float) Math.random() * MyGdxGame.scrHeight + 250);
+            Enemy ninja = new Enemy((float) Math.random() * MyGdxGame.scrWidth, (float) Math.random() * MyGdxGame.scrHeight + MyGdxGame.scrHeight);
             enemies.add(ninja);
             ninja.setSpeed(level * 5 + 90);
 

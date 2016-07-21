@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -39,15 +40,14 @@ public class Player {
 
 
 
-
     //float ninjaStateTime = 0;
 
 
     public Player() {
         Gdx.input.setInputProcessor(inputProcessor);
         sprite = new Sprite(new Texture("images/Ninja_Player(1).png"));
-        //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
-        sprite.setScale(objWidth, objHeight);
+        sprite.setSize(MyGdxGame.scrWidth / 20, MyGdxGame.scrHeight / 20);
+        sprite.setScale(MyGdxGame.scrWidth / 20, MyGdxGame.scrHeight / 20);
         position = new Vector2();
         velocity = new Vector2();
         accel = new Vector2();
@@ -71,21 +71,22 @@ public class Player {
         ninja3 = new Sprite(frame3);
         ninja4 = new Sprite(frame4);
         ninja5 = new Sprite(frame5);
-        ninja1.setScale(objWidth, objHeight);
-        ninja2.setScale(objWidth, objHeight);
-        ninja3.setScale(objWidth, objHeight);
-        ninja4.setScale(objWidth, objHeight);
-        ninja5.setScale(objWidth, objHeight);
-        ninja1.setSize(objWidth, objHeight);
-        ninja2.setSize(objWidth, objHeight);
-        ninja3.setSize(objWidth, objHeight);
-        ninja4.setSize(objWidth, objHeight);
-        ninja5.setSize(objWidth, objHeight);
+        ninja1.setScale(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninja2.setScale(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninja3.setScale(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninja4.setScale(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninja5.setScale(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninja1.setSize(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninja2.setSize(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninja3.setSize(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninja4.setSize(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninja5.setSize(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
 
 
 
         ninja = new Animation(0.05f, new TextureRegion(ninja1), new TextureRegion(ninja2), new TextureRegion(ninja3), new TextureRegion(ninja4), new TextureRegion(ninja5));
         ninja.setPlayMode(Animation.PlayMode.LOOP);
+
 
     }
 
@@ -119,7 +120,7 @@ public class Player {
     public void jump() {
         float deltaTime = Gdx.graphics.getDeltaTime();
         if (!isJumping) {
-            setVelocity(0, 950);
+            setVelocity(0, MyGdxGame.scrHeight/2 * 3);
             getVelocity().add(MyGdxGame.gravity);
             getPosition().mulAdd(getVelocity(), deltaTime);
             isJumping = true;
@@ -238,7 +239,7 @@ public class Player {
     public void draw(SpriteBatch batch, float time) {
 
         if (Gdx.input.isTouched() == false) {
-            batch.draw(sprite, getPosition().x, getPosition().y, objWidth, objHeight);
+            batch.draw(sprite, getPosition().x, getPosition().y, ninja1.getWidth(), ninja1.getHeight());
         } else {
             batch.draw(ninja.getKeyFrame(time), getPosition().x, getPosition().y, ninja1.getWidth(), ninja1.getHeight());
         }

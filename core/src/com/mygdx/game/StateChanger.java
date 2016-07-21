@@ -22,7 +22,8 @@ public class StateChanger extends Button {
     }
 
     public void action() {
-        if (MyGdxGame.state == MyGdxGame.GameState.START) MyGdxGame.state = MyGdxGame.GameState.IN_GAME;
+        if (MyGdxGame.state == MyGdxGame.GameState.START) MyGdxGame.state = MyGdxGame.GameState.LEVEL_SELECT;
+        else if (MyGdxGame.state == MyGdxGame.GameState.LEVEL_SELECT) MyGdxGame.state = MyGdxGame.GameState.IN_GAME;
         else if (MyGdxGame.state == MyGdxGame.GameState.IN_GAME) MyGdxGame.state = MyGdxGame.GameState.GAME_OVER;
         //else MyGdxGame.state = MyGdxGame.GameState.START;
     }

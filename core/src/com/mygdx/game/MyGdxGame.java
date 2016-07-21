@@ -52,7 +52,8 @@ public class MyGdxGame extends ApplicationAdapter {
     private List<Enemy> enemies;
     private Music music;
     private Music music1;
-    private Sound shootSound, matchSound;
+    private Sound shootSound, matchSound, story1;
+    private Boolean isPlaying;
     private Sprite background;
     private Sprite bgStart;
     private ArrowControls dpad;
@@ -119,10 +120,12 @@ public class MyGdxGame extends ApplicationAdapter {
         font = fontGenerator.generateFont(parameter);
         music = Gdx.audio.newMusic(Gdx.files.internal("music/epicAdventure.mp3"));
         music1 = Gdx.audio.newMusic(Gdx.files.internal("music/japanese.mp3"));
-        music.setLooping(true);
-        music.play();
+        //music.setLooping(true);
+        //music.play();
         matchSound = Gdx.audio.newSound(Gdx.files.internal("sounds/matchStart.wav"));
         shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shootStar.mp3"));
+        story1 = Gdx.audio.newSound(Gdx.files.internal("sounds/story3.mp3"));
+        isPlaying = false;
         layout = new GlyphLayout();
         player = new Player();
         bullets = Collections.synchronizedList(new ArrayList<Bullet>());
@@ -148,7 +151,7 @@ public class MyGdxGame extends ApplicationAdapter {
         Random randomNum = new Random();
         int songNum =randomNum.nextInt(2) + 1;
         if(songNum == 1) {
-        music.play();
+            music.play();
             music.setLooping(true);
         }
 
@@ -196,6 +199,7 @@ public class MyGdxGame extends ApplicationAdapter {
         time += deltaTime;
         dpad.update(player);
         player.update();
+
         for (Enemy enemy : enemies) {
             enemy.update();
         }
@@ -210,6 +214,10 @@ public class MyGdxGame extends ApplicationAdapter {
         }
 
         else if (state == GameState.IN_GAME) {
+            if (!isPlaying) {
+                story1.play();
+                isPlaying = true;
+            }
             for (Enemy ninjaEnemy : enemies) {ninjaEnemy.followPlayer(player);}
             if (stateChanger.isPressed()) stateChanger.action();
             // shoot and move on input
@@ -347,7 +355,7 @@ public class MyGdxGame extends ApplicationAdapter {
             font.getData().setScale(1.46f);
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 250);
         } else if (state == GameState.IN_GAME) {
-            stateChanger.draw(batch);
+            //stateChanger.draw(batch);
             dpad.draw(batch);
             currentLevel.getLevel();
             font.getData().setScale(1f);
