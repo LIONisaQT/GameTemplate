@@ -124,7 +124,7 @@ public class MyGdxGame extends ApplicationAdapter {
         //music.play();
         matchSound = Gdx.audio.newSound(Gdx.files.internal("sounds/matchStart.wav"));
         shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shootStar.mp3"));
-        story1 = Gdx.audio.newSound(Gdx.files.internal("sounds/story3.mp3"));
+        //story1 = Gdx.audio.newSound(Gdx.files.internal("sounds/story3.mp3"));
         isPlaying = false;
         layout = new GlyphLayout();
         player = new Player();
@@ -215,7 +215,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
         else if (state == GameState.IN_GAME) {
             if (!isPlaying) {
-                story1.play();
+//                story1.play();
                 isPlaying = true;
             }
             for (Enemy ninjaEnemy : enemies) {ninjaEnemy.followPlayer(player);}

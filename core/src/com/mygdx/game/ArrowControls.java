@@ -14,11 +14,12 @@ public class ArrowControls {
     Sprite leftButton;
     Sprite rightButton;
 
-    float size;
-    int spriteSpeed;
+    float width, height;
+    float spriteSpeed;
 
     public ArrowControls() {
-        size = 100;
+        width = MyGdxGame.scrWidth / 10;
+        height = MyGdxGame.scrHeight / 6;
         spriteSpeed = 10;
 
         upButton = new Sprite(new Texture("images/arrowUp.png"));
@@ -26,9 +27,13 @@ public class ArrowControls {
         rightButton = new Sprite(new Texture("images/arrowRight.png"));
 
 
-        upButton.setBounds(120, 100, size, size);
-        leftButton.setBounds(20, 20, size, size);
-        rightButton.setBounds(220, 20, size, size);
+        upButton.setSize(width, height);
+        leftButton.setSize(width, height);
+        rightButton.setSize(width, height);
+
+        upButton.setPosition(width + 20, height);
+        leftButton.setPosition(20, 20);
+        rightButton.setPosition(width * 2 + 20, 20);
         upButton.setAlpha(0.5f);
         leftButton.setAlpha(0.5f);
         rightButton.setAlpha(0.5f);

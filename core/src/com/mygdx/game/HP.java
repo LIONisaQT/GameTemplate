@@ -21,9 +21,9 @@ public class HP {
         renderer.setProjectionMatrix(batch.getProjectionMatrix());
         renderer.setTransformMatrix(batch.getTransformMatrix());
         health = 100;
-        width = 350;
-        height = 50;
-        sideWidth = 350;
+        width = MyGdxGame.scrWidth / 3;
+        height = MyGdxGame.scrHeight / 10;
+        sideWidth = MyGdxGame.scrWidth / 3;
         x = MyGdxGame.scrWidth - width - 20;
         y = MyGdxGame.scrHeight- height - 20;
     }
@@ -34,7 +34,7 @@ public class HP {
     }
 
     public void reset() {
-        width = 350;
+        width = MyGdxGame.scrWidth / 3;
         health = 100;
     }
 
@@ -46,7 +46,9 @@ public class HP {
         renderer.end();
         // draw fill
         renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.setColor(Color.YELLOW);
+        if (health > 50) renderer.setColor(Color.GREEN);
+        else if (health <= 50 && health > 15) renderer.setColor(Color.YELLOW);
+        else renderer.setColor(Color.RED);
         renderer.rect(x, y, width, height);
         renderer.end();
     }
