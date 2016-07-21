@@ -1,46 +1,97 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Ryan on 7/4/2016.
  */
 public class Player {
     private MyInputProcessor inputProcessor = new MyInputProcessor(); //lets you play with some of the gestures
-
-    private float xFactor, yFactor, //how much lean you need to move, used with tiltControls()
-                  moveSpeed;        //left-right speed of the player, used with tapToMove()
-    private Vector2 position, velocity, accel; //accel controls accelerometer numbers
+    private float xFactor, yFactor; //how much lean you need to move
+    private float moveSpeed;        //left-right speed of the player, used with tapToMove()
+    private Vector2 position, velocity, accel;
     private Rectangle bounds;
-    public Sprite sprite;
-    protected static float first, //holds the y position of the initial tap location
-                            last, //holds the y position of the last tap location
-                     minDistance; //controls the threshold you need to pass in order to flick up to jump
+    private Sprite sprite;
+    private Animation ninja;
+    private Sprite ninja1;
+    private Sprite ninja2;
+    private Sprite ninja3;
+    private Sprite ninja4;
+    private Sprite ninja5;
+    private float objWidth;
+    private float objHeight;
+    protected static float first, //holds the objHeight position of the initial tap location
+            last, //holds the objHeight position of the last tap location
+            minDistance; //controls the threshold you need to pass in order to flick up to jump
+    protected boolean isJumping;
+
+
+
+
+    //float ninjaStateTime = 0;
+
 
     public Player() {
         Gdx.input.setInputProcessor(inputProcessor);
-        sprite = new Sprite(new Texture("images/badlogic.jpg"));
-        //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
-        sprite.setScale(sprite.getWidth(), sprite.getHeight());
+        sprite = new Sprite(new Texture("images/Ninja_Player(1).png"));
+        sprite.setSize(MyGdxGame.scrWidth / 20, MyGdxGame.scrHeight / 20);
+        sprite.setScale(MyGdxGame.scrWidth / 20, MyGdxGame.scrHeight / 20);
         position = new Vector2();
         velocity = new Vector2();
         accel = new Vector2();
         bounds = new Rectangle();
-        xFactor = -300; //play with this value, used with tiltControls()
-        yFactor = -400; //play with this value, used with tiltControls()
-        moveSpeed = 750; //play with this value, used with tapToMove()
+        xFactor = -300; //play with this value
+        yFactor = -400; //play with this value
+        moveSpeed = 500;
+        objWidth = 90;
+        objHeight = 100;
+        isJumping = false;
+
+        //Player animation
+        Texture frame1 = new Texture("images/Ninja_Player(1).png");
+        frame1.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        Texture frame2 = new Texture("images/Ninja_Player(2).png");
+        Texture frame3 = new Texture("images/Ninja_Player(3).png");
+        Texture frame4 = new Texture("images/Ninja_Player(4).png");
+        Texture frame5 = new Texture("images/Ninja_Player(5).png");
+        ninja1 = new Sprite(frame1);
+        ninja2 = new Sprite(frame2);
+        ninja3 = new Sprite(frame3);
+        ninja4 = new Sprite(frame4);
+        ninja5 = new Sprite(frame5);
+        ninja1.setScale(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninja2.setScale(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninja3.setScale(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninja4.setScale(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninja5.setScale(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninja1.setSize(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninja2.setSize(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninja3.setSize(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninja4.setSize(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+        ninja5.setSize(MyGdxGame.scrWidth / 15, MyGdxGame.scrHeight / 7);
+
+
+
+        ninja = new Animation(0.05f, new TextureRegion(ninja1), new TextureRegion(ninja2), new TextureRegion(ninja3), new TextureRegion(ninja4), new TextureRegion(ninja5));
+        ninja.setPlayMode(Animation.PlayMode.LOOP);
+
+
     }
 
     //shoot bullets from the player!
-    public void shoot(ArrayList<Bullet> bullets) {
+    public void shoot(List<Bullet> bullets) {
         //ew math, don't need to touch this at all
         float deltaX = MyGdxGame.getTapPosition().x - getPosition().x;
         float deltaY = MyGdxGame.getTapPosition().y - getPosition().y;
@@ -68,15 +119,12 @@ public class Player {
 
     public void jump() {
         float deltaTime = Gdx.graphics.getDeltaTime();
-        if (minDistance > 10) {
-            if (first > last) {
-                setVelocity(0, 1500);
-                first = 0;
-                last = 0;
-                getVelocity().add(MyGdxGame.gravity);
-            }
+        if (!isJumping) {
+            setVelocity(0, MyGdxGame.scrHeight/2 * 3);
+            getVelocity().add(MyGdxGame.gravity);
+            getPosition().mulAdd(getVelocity(), deltaTime);
+            isJumping = true;
         }
-        getPosition().mulAdd(getVelocity(), deltaTime);
     }
 
     //all movement code here
@@ -85,8 +133,10 @@ public class Player {
         setAccel(Gdx.input.getAccelerometerX(), Gdx.input.getAccelerometerY(), xFactor, yFactor);
 
         //makes movement feel snappier, comment out for sluggish turning
-        if (Gdx.input.getAccelerometerX() > 0 || Gdx.input.getAccelerometerX() < 0) getVelocity().x = 0;
-        if (Gdx.input.getAccelerometerY() > 0 || Gdx.input.getAccelerometerY() < 0) getVelocity().y = 0;
+        if (Gdx.input.getAccelerometerX() > 0 || Gdx.input.getAccelerometerX() < 0)
+            getVelocity().x = 0;
+        if (Gdx.input.getAccelerometerY() > 0 || Gdx.input.getAccelerometerY() < 0)
+            getVelocity().y = 0;
 
         getVelocity().add(getAccel().x, getAccel().y);
         getPosition().mulAdd(getVelocity(), deltaTime);
@@ -124,7 +174,7 @@ public class Player {
     }
 
     public void reset() {
-        setPosition(MyGdxGame.scrWidth / 2 - getBounds().getWidth() / 2, MyGdxGame.scrHeight / 2);
+        setPosition(MyGdxGame.scrWidth / 2, 0);
         setVelocity(0, 0);
     }
 
@@ -134,17 +184,20 @@ public class Player {
         setBounds();
         if (MyGdxGame.state == MyGdxGame.GameState.START) {
             if (Gdx.input.justTouched()) {
-                setVelocity(0, 100);
+                setVelocity(0, 0);
                 getPosition().mulAdd(getVelocity(), deltaTime);
             }
         }
         if (MyGdxGame.state == MyGdxGame.GameState.IN_GAME) {
             getVelocity().add(MyGdxGame.gravity);
-            tapToMove();
-            jump();
+            getPosition().mulAdd(getVelocity(), deltaTime);
             wrap();
+            if (isJumping && position.y <= 0) {
+                isJumping = false;
+            }
         }
     }
+
 
     //one dimensional movement, third parameter controls up-down or left-right
     public void setAccel(float acc, float multiplier, char c) {
@@ -153,21 +206,43 @@ public class Player {
     }
 
     //two dimensional movement
-    public void setAccel(float x, float y, float xMultiplier, float yMultiplier) {accel.set(x * xMultiplier, y * yMultiplier);}
+    public void setAccel(float x, float y, float xMultiplier, float yMultiplier) {
+        accel.set(x * xMultiplier, y * yMultiplier);
+    }
 
-    public Vector2 getAccel() {return accel;}
+    public Vector2 getAccel() {
+        return accel;
+    }
 
-    public void setPosition(float x, float y) {position.set(x, y);}
+    public void setPosition(float x, float y) {
+        position.set(x, y);
+    }
 
-    public Vector2 getPosition() {return position;}
+    public Vector2 getPosition() {
+        return position;
+    }
 
-    public void setVelocity(float x, float y) {velocity.set(x, y);}
+    public void setVelocity(float x, float y) {
+        velocity.set(x, y);
+    }
 
-    public Vector2 getVelocity() {return velocity;}
+    public Vector2 getVelocity() {
+        return velocity;
+    }
 
     public void setBounds() {bounds.set(getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());}
 
-    public Rectangle getBounds() {return bounds;}
+    public Rectangle getBounds() {
+        return bounds;
+    }
 
-    public void draw(SpriteBatch batch) {batch.draw(sprite, getPosition().x, getPosition().y, sprite.getWidth(), sprite.getHeight());}
+    public void draw(SpriteBatch batch, float time) {
+
+        if (Gdx.input.isTouched() == false) {
+            batch.draw(sprite, getPosition().x, getPosition().y, ninja1.getWidth(), ninja1.getHeight());
+        } else {
+            batch.draw(ninja.getKeyFrame(time), getPosition().x, getPosition().y, ninja1.getWidth(), ninja1.getHeight());
+        }
+    }
 }
+

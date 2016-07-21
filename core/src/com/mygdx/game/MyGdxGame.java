@@ -2,29 +2,44 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.mygdx.game.assets.loaders.BulletLoader;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 
 public class MyGdxGame extends ApplicationAdapter {
-    protected static final int NUM_LEVELS = 10;
     protected static float scrWidth, scrHeight;
 
-    protected enum GameState {START, LEVEL_SELECT, IN_GAME, GAME_OVER}
+    protected enum GameState {START, IN_GAME, GAME_OVER}
     protected static GameState state;
 
+
     //stuff you can save here
+
     protected static Preferences preferences;
     protected static int score, highScore;
+
+    private AssetManager manager; //EXPERIMENTAL SHIT
 
     private SpriteBatch batch;
     private static Vector3 tap; //holds the position of tap location
@@ -32,51 +47,94 @@ public class MyGdxGame extends ApplicationAdapter {
     private GlyphLayout layout;
     protected static Vector2 gravity;
     private Player player;
-    private ArrayList<Bullet> bullets;
-    private ArrayList<Enemy> enemies;
-    private ArrayList<Blood> blood;
+    private HP hpBar;
+    private List<Bullet> bullets;
+    private List<Enemy> enemies;
     private Music music;
-    private Sound shootSound, matchSound;
+    private Music music1;
+    private Sound shootSound, matchSound, story1;
+    private Boolean isPlaying;
+    private Sprite background;
+    private Sprite bgStart;
+    private ArrowControls dpad;
+    public static int tapIndex;
+    private FreeTypeFontGenerator fontGenerator; //handles .ttf --> .fnt
+    private Iterator<Bullet> bulletIterator;
+    private Iterator<Enemy> enemyIterator;
+    private ArrayList<Blood> blood;
+
 
     public static OrthographicCamera camera; //camera is your game world camera
     public static OrthographicCamera uiCamera; //uiCamera is your heads-up display
 
     private Level currentLevel;
-    private ArrayList<Level> levels;
 
     //buttons stuff
     private DebugButton debug;
     private StateChanger stateChanger;
-    private ArrayList<LevelButton> levelButtons;
+
+    private float time = 0;
 
     @Override
     public void create() {
         scrWidth = Gdx.graphics.getWidth();
         scrHeight = Gdx.graphics.getHeight();
         gravity = new Vector2();
+        blood = new ArrayList<Blood>();
+        background = new Sprite(new Texture("images/shawdow forrest.jpg"));
+        bgStart = new Sprite(new Texture("images/bgstart.jpeg"));
 
         preferences = new Preferences("Preferences");
-        //if there are no high scores, then make one
+        //if theree are no high scores, then make one
         if (preferences.getInteger("highScore", 0) == 0) {
             highScore = 0;
             preferences.putInteger("highScore", highScore);
-        }
-        else highScore = preferences.getInteger("highScore", 0); //set highScore to saved value
+        } else
+            highScore = preferences.getInteger("highScore", 0); //set highScore to saved value
+
+        preferences = new Preferences("Preferences");
+        //if theree are no high scores, then make one
+        if (preferences.getInteger("highScore", 0) == 0) {
+            highScore = 0;
+            preferences.putInteger("highScore", highScore);
+        } else
+            highScore = preferences.getInteger("highScore", 0); //set highScore to saved value
+
+        /*
+        =====EXPERIMENTAL SHIT=====
+        manager = new AssetManager();
+        manager.setLoader(Bullet.class, new BulletLoader(new InternalFileHandleResolver()));
+        manager.load("Bullet.java", Bullet.class);
+        manager.finishLoading();
+        //manager.load(new AssetDescriptor<Bullet>("Bullet.java", Bullet.class, new BulletLoader.BulletParameter()));
+        =====EXPERIMENTAL SHIT=====
+        */
 
         batch = new SpriteBatch();
+        hpBar = new HP(batch);
         tap = new Vector3(); //location of tap
-        font = new BitmapFont(Gdx.files.internal("fonts/arial.fnt"),
-                Gdx.files.internal("fonts/arial.png"), false);
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/bgm1.mp3"));
-        music.setLooping(true);
-        music.play();
+        //FONT STUFF
+        fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Chicken Butt.ttf")); //replace font with whatever
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = (int) (90 * (scrWidth / 1196)); //lin did the math and i guess it works
+        font = fontGenerator.generateFont(parameter);
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/epicAdventure.mp3"));
+        music1 = Gdx.audio.newMusic(Gdx.files.internal("music/japanese.mp3"));
+        //music.setLooping(true);
+        //music.play();
         matchSound = Gdx.audio.newSound(Gdx.files.internal("sounds/matchStart.wav"));
-        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shootSound.wav"));
+        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shootStar.mp3"));
+        //story1 = Gdx.audio.newSound(Gdx.files.internal("sounds/story3.mp3"));
+        isPlaying = false;
         layout = new GlyphLayout();
         player = new Player();
-        bullets = new ArrayList<Bullet>();
-        enemies = new ArrayList<Enemy>();
-        blood = new ArrayList<Blood>();
+        bullets = Collections.synchronizedList(new ArrayList<Bullet>());
+        enemies = Collections.synchronizedList(new ArrayList<Enemy>());
+        dpad = new ArrowControls();
+        tapIndex = 0;
+        bulletIterator = bullets.iterator();
+        enemyIterator = enemies.iterator();
+
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, scrWidth, scrHeight);
@@ -85,16 +143,25 @@ public class MyGdxGame extends ApplicationAdapter {
         uiCamera.update();
 
         debug = new DebugButton(10, 10);
-        stateChanger = new StateChanger(scrWidth / 2 + 10, 10);
+        stateChanger = new StateChanger(scrWidth - 150, 10);
 
-        levelButtons = new ArrayList<LevelButton>();
-        levels = new ArrayList<Level>();
-        for (int i = 0; i < NUM_LEVELS; i++) {
-            levelButtons.add(new LevelButton(i * scrWidth / NUM_LEVELS, scrHeight / 2));
-            levels.add(new Level(i));
+
+        currentLevel = new Level(1);
+
+        Random randomNum = new Random();
+        int songNum =randomNum.nextInt(2) + 1;
+        if(songNum == 1) {
+            music.play();
+            music.setLooping(true);
         }
-        currentLevel = new Level(0);
+
+        if(songNum == 2){
+            music1.play();
+            music.setLooping(true);
+        }
+
         resetGame();
+
     }
 
     @Override
@@ -111,47 +178,55 @@ public class MyGdxGame extends ApplicationAdapter {
         player.reset();
         bullets.clear();
         enemies.clear();
+        hpBar.reset();
         blood.clear();
-        score = 0;
+        score=0;
     }
+
+
 
     /*
       - gets and translates coordinates of tap to game world coordinates
       - you don't need to touch this at all
     */
     public static Vector3 getTapPosition() { //gets and translates coordinates of tap to game world coordinates
-        tap.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+        tap.set(Gdx.input.getX(tapIndex), Gdx.input.getY(tapIndex), 0);
         return camera.unproject(tap);
     }
 
     private void updateGame() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        time += deltaTime;
+        dpad.update(player);
         player.update();
 
+        for (Enemy enemy : enemies) {
+            enemy.update();
+        }
         if (state == GameState.START) {
+            tapIndex = 0;
             if (debug.isPressed()) debug.action();
             if (stateChanger.isPressed()) {
                 matchSound.play();
                 stateChanger.action();
-            }
-        }
-
-        else if (state == GameState.LEVEL_SELECT) {
-            for (int i = 0; i < NUM_LEVELS; i++) {
-                if (levelButtons.get(i).isPressed()) {
-                    currentLevel = levels.get(i + 1); //current level is whatever you tapped
-                    enemies = currentLevel.getEnemies();
-                    levelButtons.get(i).pressedAction();
-                }
+                enemies = currentLevel.getEnemies();
             }
         }
 
         else if (state == GameState.IN_GAME) {
-            for (Enemy enemy : enemies) {
-                enemy.update();
-                enemy.followPlayer(player);
+            if (!isPlaying) {
+//                story1.play();
+                isPlaying = true;
             }
+            for (Enemy ninjaEnemy : enemies) {ninjaEnemy.followPlayer(player);}
             if (stateChanger.isPressed()) stateChanger.action();
-            if (Gdx.input.justTouched()) {
+            // shoot and move on input
+            if (Gdx.input.justTouched() && !dpad.isTouched()) {
+                tapIndex = 0;
+                shootSound.play();
+                player.shoot(bullets);
+            } else if (Gdx.input.justTouched() && Gdx.input.isTouched(0) && Gdx.input.isTouched(1) && dpad.isTouched()) {
+                tapIndex = 1;
                 shootSound.play();
                 player.shoot(bullets);
             }
@@ -168,20 +243,56 @@ public class MyGdxGame extends ApplicationAdapter {
                 }
             }
 
-            //enemy collision stuff
-            for (int j = 0; j < enemies.size(); j++) {
-                //player die
-                if (enemies.get(j).getBounds().overlaps(player.getBounds())) {
-                    state = GameState.GAME_OVER;
+            // collision
+            enemyIterator = enemies.iterator();
+            while(enemyIterator.hasNext()) {
+                Enemy enemy = enemyIterator.next();
+                //player die when collide with enemy
+                if (enemy.getBounds().overlaps(player.getBounds())) {
+                    hpBar.hit();
+                    if (hpBar.health <= 0){
+                        score = currentLevel.getLevel();
+                        state = GameState.GAME_OVER;
+                    }
+
                 }
-                //remove bullet and enemy when they collide
-                for (int i = 0; i < bullets.size(); i++)  {
-                    if (enemies.get(j).getBounds().overlaps(bullets.get(i).getBounds()))  {
-                        blood.add(new Blood(enemies.get(j).getPosition().x, enemies.get(j).getPosition().y));
-                        enemies.remove(j);
-                        bullets.remove(i);
+               //remove bullet and enemy when they collide
+                bulletIterator = bullets.iterator();
+                while(bulletIterator.hasNext()) {
+                    Bullet bullet = bulletIterator.next();
+                    if (enemy.getBounds().overlaps(bullet.getBounds())) {
+                        blood.add(new Blood(enemy.getPosition().x, enemy.getPosition().y));
+                        enemyIterator.remove();
+                        bulletIterator.remove();
+                        break;
                     }
                 }
+            }
+
+
+            //collision
+//            for (int j = 0; j < enemies.size(); j++) {
+//                //player die when collide with enemy
+//                if (enemies.get(j).getBounds().overlaps(player.getBounds())) {
+//                    hpBar.hit();
+//                    if (hpBar.health <= 0){
+//                        score = currentLevel.getLevel() - 1;
+//                        state = GameState.GAME_OVER;
+//                    }
+//
+//                }
+//                //remove bullet and enemy when they collide
+//                for (int i = 0; i < bullets.size(); i++)  {
+//                    if (enemies.get(j).getBounds().overlaps(bullets.get(i).getBounds()))  {
+//                        enemies.remove(j);
+//                        bullets.remove(i);
+//
+//                    }
+//                }
+//            }
+            if (enemies.size() == 0) {
+                currentLevel.setLevel(currentLevel.getLevel()+1);
+                enemies = currentLevel.getEnemies();
             }
         }
 
@@ -192,10 +303,11 @@ public class MyGdxGame extends ApplicationAdapter {
                 preferences.putInteger("highScore", score);
             }
             preferences.flush(); //saves
-
             if (Gdx.input.justTouched()) {
                 resetGame();
+
             }
+            currentLevel.setLevel(1);
         }
     }
 
@@ -204,16 +316,17 @@ public class MyGdxGame extends ApplicationAdapter {
         camera.update();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
+        batch.draw(background,0,0,scrWidth,scrHeight);
+
         font.setColor(Color.WHITE);
         if (state == GameState.START) {
+
             //start shit here
-        } else if (state == GameState.LEVEL_SELECT) {
-            for (LevelButton lvlBtn : levelButtons) {lvlBtn.draw(batch);}
         } else if (state == GameState.IN_GAME) {
-            for (Bullet bullet : bullets) bullet.draw(batch);
-            player.draw(batch);
-            for (Enemy enemy : enemies) enemy.draw(batch);
             for (Blood b : blood) b.draw(batch);
+            for (Bullet bullet : bullets) bullet.draw(batch, time);
+            player.draw(batch, time);
+            for (Enemy enemy : enemies) enemy.draw(batch, time);
         } else {
             //gameover shit here
         }
@@ -222,34 +335,48 @@ public class MyGdxGame extends ApplicationAdapter {
         //game ui camera
         batch.setProjectionMatrix(uiCamera.combined);
         batch.begin();
-
         if (debug.debug) {
-            font.draw(batch, "Game state: " + MyGdxGame.state, 20, scrHeight - 20);
-            font.draw(batch, "Bullet count: " + bullets.size(), 20, scrHeight - 70);
-            font.draw(batch, "Number of enemies: " + enemies.size(), 20, scrHeight - 120);
-            font.draw(batch, "Velocity: " + (int)player.getVelocity().x + ", " + (int)player.getVelocity().y, 20, scrHeight - 170);
-            font.draw(batch, "Position: " + (int)player.getPosition().x + ", " + (int)player.getPosition().y, 20, scrHeight - 220);
+            font.draw(batch, "Game state: " + MyGdxGame.state, 20, MyGdxGame.scrHeight - 20);
+            font.draw(batch, "Bullet count: " + bullets.size(), 20, MyGdxGame.scrHeight - 70);
+            font.draw(batch, "Number of enemies: " + enemies.size(), 20, MyGdxGame.scrHeight - 120);
+            font.draw(batch, "Velocity: " + (int)player.getVelocity().x + ", " + (int)player.getVelocity().y, 20, MyGdxGame.scrHeight - 170);
+            font.draw(batch, "Position: " + (int)player.getPosition().x + ", " + (int)player.getPosition().y, 20, MyGdxGame.scrHeight - 220);
+            font.draw(batch, "HP: " + hpBar.health, 20, MyGdxGame.scrHeight - 270);
+
         }
 
+
         if (state == GameState.START) {
+            batch.draw(bgStart,0,0,scrWidth,scrHeight);
             stateChanger.draw(batch);
-            debug.draw(batch);
-            layout.setText(font, "Tap to start!");
-            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
+            //debug.draw(batch);
+            font.setColor(Color.FIREBRICK);
+            layout.setText(font, "NINJA SURVIVAL");
+            font.getData().setScale(1.46f);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight - 250);
         } else if (state == GameState.IN_GAME) {
-            stateChanger.draw(batch);
-            layout.setText(font, "Score: " + score);
-            font.draw(batch, layout, scrWidth - layout.width - 20, scrHeight - 20);
-            layout.setText(font, "High score: " + highScore);
-            font.draw(batch, layout, scrWidth - layout.width - 20, scrHeight - 70);
-        } else { //state == GameState.GAME_OVER
+            //stateChanger.draw(batch);
+            dpad.draw(batch);
+            currentLevel.getLevel();
+            font.getData().setScale(1f);
+            font.setColor(Color.WHITE);
+            layout.setText(font, "Level " + currentLevel.getLevel());
+            font.draw(batch, layout, 20, MyGdxGame.scrHeight - 20);
+        } else if (state == GameState.GAME_OVER) {
+            font.getData().setScale(1.7f);
+            font.setColor(Color.FIREBRICK);
             layout.setText(font, "Tap to restart!");
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2 + 150);
+            font.getData().setScale(1f);
+            font.setColor(Color.WHITE);
+            layout.setText(font, "Levels Survived: " + score);
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
-            layout.setText(font, "Your score: " + score);
-            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2 - 50);
             layout.setText(font, "High score: " + highScore);
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2 - 100);
         }
         batch.end();
+        if (state == GameState.IN_GAME) {
+            hpBar.draw();
+        }
     }
 }

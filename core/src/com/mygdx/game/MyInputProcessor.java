@@ -3,9 +3,9 @@ package com.mygdx.game;
 import com.badlogic.gdx.InputProcessor;
 
 /**
- * Created by Ryan on 7/7/2016.
+<<<<<<< HEAD
+ * Created by MissionBit on 7/8/16.
  */
-
 public class MyInputProcessor implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
@@ -51,3 +51,4 @@ public class MyInputProcessor implements InputProcessor {
         return false;
     }
 }
+

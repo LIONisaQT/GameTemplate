@@ -1,5 +1,10 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+
 import java.util.ArrayList;
 
 /**
@@ -7,6 +12,7 @@ import java.util.ArrayList;
  */
 public class Level {
     private int level;
+
     public Level(int lvl) {
         setLevel(lvl);
     }
@@ -15,6 +21,8 @@ public class Level {
 
     public int getLevel() {return level;}
 
+
+
     /*
         put enemies inside arraylist here
         number of enemies depends on how many you want per level
@@ -22,14 +30,13 @@ public class Level {
      */
     public ArrayList<Enemy> getEnemies() {
         ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-        if (getLevel() == 1) {
-            enemies.add(new Enemy((float)Math.random() * MyGdxGame.scrWidth, (float)Math.random() * MyGdxGame.scrHeight));
-        } else if (getLevel() == 2) {
+        for (int i = 0; i < level * 5; i++) {
+            Enemy ninja = new Enemy((float) Math.random() * MyGdxGame.scrWidth, (float) Math.random() * MyGdxGame.scrHeight + MyGdxGame.scrHeight);
+            enemies.add(ninja);
+            ninja.setSpeed(level * 5 + 90);
 
-        } else if (getLevel() == 3) {
 
         }
-        //ADD MOAR LEVELS
         return enemies;
     }
 }

@@ -7,9 +7,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-/**
- * Created by Ryan on 7/12/2016.
- */
 public class Blood {
     private static float FADE_TIME = 2;
     private static AssetManager manager;
@@ -20,14 +17,14 @@ public class Blood {
 
     static {
         //memory management -- loading image into manager
-        String image = "images/badlogic.jpg";
+        String image = "images/blood.png";
         manager = new AssetManager();
         manager.load(image, Texture.class);
         manager.finishLoading();
     }
 
     public Blood(float x, float y) {
-        sprite = new Sprite(manager.get("images/badlogic.jpg", Texture.class));
+        sprite = new Sprite(manager.get("images/blood.png", Texture.class));
         sprite.setSize(100, 100);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());
         position = new Vector2();
@@ -44,7 +41,7 @@ public class Blood {
         float alpha = 1 - (fadeStart / FADE_TIME);
         if (alpha < 0) {
             alpha = 0;
-            texture.dispose();
+            //texture.dispose();
         }
 
         batch.setColor(1, 1, 1, alpha);
